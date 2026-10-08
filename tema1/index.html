@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerebrito Matemático - Tema 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .dyslexia-friendly { letter-spacing: 0.05em; word-spacing: 0.15em; line-height: 1.8; font-size: 1.05rem; }
+        .card-pop { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .pulse-score { animation: pulse 0.4s ease-out; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.25); color: #16a34a; } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-purple-200">
+
+    <!-- CABECERA -->
+    <header class="bg-purple-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-400 text-purple-950 p-2 rounded-lg font-black text-xl shadow">🧙‍♂️ 5º</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Cerebrito Matemático: Tema 1</h1>
+                    <p class="text-xs text-purple-200 hidden sm:block">Grandes Números y Romanos • Hogwarts</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="toggle-dyslexia" onclick="toggleDyslexiaMode()" class="bg-purple-950 hover:bg-purple-800 text-xs sm:text-sm px-3 py-1.5 rounded-lg border border-purple-500 transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-eye text-yellow-300"></i>
+                    <span class="hidden md:inline">Lectura Fácil</span>
+                </button>
+                <div class="bg-amber-400 text-slate-900 font-extrabold px-3 py-1.5 rounded-xl text-sm flex items-center gap-2 shadow">
+                    <i class="fa-solid fa-star text-amber-700"></i>
+                    <span id="score-counter" class="text-base">0</span> pts
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="max-w-4xl mx-auto px-4 py-6 w-full flex-grow flex flex-col justify-center">
+
+        <!-- PANTALLA 1: SELECCIÓN DE NIVEL -->
+        <section id="level-selection" class="card-pop bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8">
+            <div class="text-center mb-8">
+                <span class="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    Academia Mágica de Arithmancy
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-bold mt-2 text-slate-800">Elige tu Nivel de Desafío</h2>
+                <p class="text-slate-600 mt-2 text-sm sm:text-base">Resuelve las preguntas interactivas o atrévete con el Gran Reto Final en tu libreta.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button onclick="startLevel(1)" class="group p-5 bg-gradient-to-br from-amber-50 to-orange-50 hover:from-amber-100 border-2 border-amber-300 rounded-2xl text-left transition shadow-sm hover:shadow-md flex items-start gap-4">
+                    <div class="bg-amber-500 text-white rounded-xl p-3 text-2xl font-bold group-hover:scale-110 transition">📜</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Nivel 1: Muggle curioso</h3>
+                        <p class="text-xs text-slate-600 mt-1">5 preguntas: Lectura, descomposiciones y V/F.</p>
+                        <span class="inline-block mt-2 text-xs font-semibold text-amber-700">+10 pts/acierto</span>
+                    </div>
+                </button>
+
+                <button onclick="startLevel(2)" class="group p-5 bg-gradient-to-br from-emerald-50 to-teal-50 hover:from-emerald-100 border-2 border-emerald-300 rounded-2xl text-left transition shadow-sm hover:shadow-md flex items-start gap-4">
+                    <div class="bg-emerald-600 text-white rounded-xl p-3 text-2xl font-bold group-hover:scale-110 transition">🧦</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Nivel 2: Elfo doméstico</h3>
+                        <p class="text-xs text-slate-600 mt-1">5 preguntas: Comparación de millones y ordenación.</p>
+                        <span class="inline-block mt-2 text-xs font-semibold text-emerald-700">+15 pts/acierto</span>
+                    </div>
+                </button>
+
+                <button onclick="startLevel(3)" class="group p-5 bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 border-2 border-blue-300 rounded-2xl text-left transition shadow-sm hover:shadow-md flex items-start gap-4">
+                    <div class="bg-blue-600 text-white rounded-xl p-3 text-2xl font-bold group-hover:scale-110 transition">🏰</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Nivel 3: Alumno Hogwarts</h3>
+                        <p class="text-xs text-slate-600 mt-1">5 preguntas: Valores posicionales y millares romanos.</p>
+                        <span class="inline-block mt-2 text-xs font-semibold text-blue-700">+20 pts/acierto</span>
+                    </div>
+                </button>
+
+                <button onclick="startLevel(4)" class="group p-5 bg-gradient-to-br from-purple-50 to-fuchsia-50 hover:from-purple-100 border-2 border-purple-300 rounded-2xl text-left transition shadow-sm hover:shadow-md flex items-start gap-4">
+                    <div class="bg-purple-700 text-white rounded-xl p-3 text-2xl font-bold group-hover:scale-110 transition">🪄</div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Nivel 4: Maestría Mágica</h3>
+                        <p class="text-xs text-slate-600 mt-1">5 preguntas: Trampas de ceros y rellenar huecos.</p>
+                        <span class="inline-block mt-2 text-xs font-semibold text-purple-700">+25 pts/acierto</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- BOTÓN 5: SUPERDESAFÍO EN LIBRETA -->
+            <div class="mt-6 pt-6 border-t border-slate-200">
+                <button onclick="showNotebookChallenge()" class="w-full group p-6 bg-gradient-to-r from-amber-500 via-red-600 to-purple-800 hover:from-amber-600 hover:to-purple-900 text-white rounded-2xl text-left transition shadow-lg hover:shadow-2xl flex items-center justify-between gap-4 border-2 border-amber-300 cursor-pointer">
+                    <div class="flex items-center gap-4 z-10">
+                        <div class="bg-amber-400 text-purple-950 rounded-2xl p-4 text-3xl font-black shadow-md group-hover:scale-110 transition">📓</div>
+                        <div>
+                            <span class="bg-amber-300 text-purple-950 text-[10px] sm:text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-widest">RETO FINAL EN LIBRETA</span>
+                            <h3 class="font-extrabold text-white text-xl sm:text-2xl mt-0.5">Gran Desafío del Número Gigante</h3>
+                            <p class="text-xs sm:text-sm text-amber-100 mt-1">Pasa a número romano el número 981.706.883 escribiendo el desarrollo en tu cuaderno.</p>
+                        </div>
+                    </div>
+                    <div class="hidden sm:flex items-center gap-2 bg-amber-400/20 px-4 py-2 rounded-xl border border-amber-300/30 font-bold text-amber-200">
+                        <span>Reto Especial</span>
+                        <i class="fa-solid fa-chevron-right text-amber-300"></i>
+                    </div>
+                </button>
+            </div>
+        </section>
+
+        <!-- PANTALLA 2: ZONA DE JUEGO -->
+        <section id="quiz-zone" class="hidden card-pop bg-white rounded-2xl shadow-xl border border-slate-200 p-5 sm:p-8">
+            <div class="mb-6">
+                <div class="flex justify-between items-center text-xs font-bold text-slate-500 mb-1">
+                    <span id="level-badge" class="px-2.5 py-1 rounded-md bg-purple-100 text-purple-800">Nivel 1</span>
+                    <span>Pregunta <span id="current-q-num">1</span> de <span id="total-q-num">5</span></span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                    <div id="progress-bar" class="bg-purple-600 h-3 rounded-full transition-all duration-300 w-0"></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl mb-6">
+                <span id="q-type-badge" class="text-[10px] font-black uppercase tracking-wider bg-purple-200 text-purple-900 px-2 py-0.5 rounded-md mb-2 inline-block">Selección Múltiple</span>
+                <h3 id="question-text" class="text-lg sm:text-xl font-bold text-slate-800 leading-snug">Cargando desafío...</h3>
+            </div>
+
+            <div class="mb-6">
+                <button onclick="toggleHelpModal()" class="w-full sm:w-auto bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-semibold px-4 py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 transition shadow-sm">
+                    <i class="fa-solid fa-hat-wizard text-amber-600 text-base"></i>
+                    <span>Pista del Sombrero Seleccionador</span>
+                </button>
+            </div>
+
+            <div id="options-container" class="grid grid-cols-1 gap-3"></div>
+
+            <div id="feedback-panel" class="hidden mt-6 p-4 rounded-xl text-sm font-medium border flex items-start gap-3">
+                <div id="feedback-icon" class="text-2xl mt-0.5"></div>
+                <div class="flex-grow">
+                    <h4 id="feedback-title" class="font-bold text-base mb-1"></h4>
+                    <p id="feedback-text" class="text-slate-700"></p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button id="next-btn" onclick="nextQuestion()" disabled class="bg-slate-300 text-slate-500 cursor-not-allowed font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow">
+                    <span>Siguiente Ejercicio</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- PANTALLA RETO DE CUADERNO -->
+        <section id="notebook-screen" class="hidden card-pop bg-amber-50 rounded-2xl shadow-xl border-2 border-amber-300 p-6 sm:p-8 text-slate-800">
+            <div class="text-center mb-6">
+                <span class="bg-amber-200 text-amber-950 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                    ⚡ Superdesafío Final de Libreta
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold mt-3 text-purple-950">El Hechizo del Número Gigante</h2>
+                <p class="text-slate-600 text-sm mt-1">Abre tu libreta de matemáticas, pon la fecha de hoy y resuelve este gran reto:</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 border-2 border-amber-400 shadow-md mb-6 text-center">
+                <p class="text-xs font-bold text-amber-700 uppercase tracking-widest mb-1">Cifra Secreta del Ministerio de Magia</p>
+                <div class="text-3xl sm:text-5xl font-black text-purple-900 tracking-wider my-2 font-mono">
+                    981.706.883
+                </div>
+                <p class="text-base font-bold text-slate-700 mt-2">
+                    ✍️ Pasa este número al sistema de <span class="text-purple-800 underline">Numeración Romana</span>.
+                </p>
+            </div>
+
+            <div class="bg-purple-100/70 border border-purple-200 rounded-xl p-5 mb-6 text-sm text-purple-950">
+                <h4 class="font-bold flex items-center gap-2 mb-2 text-purple-900">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-600"></i> Pista del Sombrero Seleccionador:
+                </h4>
+                <ul class="list-disc pl-5 space-y-1.5 text-xs sm:text-sm">
+                    <li>Descompón primero el número en tres bloques: <strong>981 millones</strong>, <strong>706 mil</strong> y <strong>883</strong>.</li>
+                    <li>Recuerda la regla especial: Para los <strong>Millones</strong> se usan <strong>DOS rayas superiores ( ̅ ̅ )</strong> sobre las letras.</li>
+                    <li>Para los <strong>Millares</strong> se usa <strong>UNA raya superior ( ̅ )</strong> sobre las letras.</li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-xl p-4 border border-amber-200 mb-6 text-xs text-slate-600">
+                <p class="font-bold text-amber-900 mb-1">📋 Comprobación para tu cuaderno:</p>
+                <p>1. Escribe el número en cifras: 981.706.883</p>
+                <p>2. Escribe la descomposición en millones, millares y unidades.</p>
+                <p>3. Escribe el resultado final en letras romanas con sus rayas correspondientes para enseñárselo al maestro/a.</p>
+            </div>
+
+            <div class="flex justify-center">
+                <button onclick="resetApp()" class="bg-purple-800 hover:bg-purple-900 text-white font-bold px-6 py-3 rounded-xl transition shadow flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-arrow-left"></i> Volver al Menú Principal
+                </button>
+            </div>
+        </section>
+
+        <!-- PANTALLA 3: RESUMEN Y RESULTADOS DE NIVELES INTERACTIVOS -->
+        <section id="results-screen" class="hidden card-pop bg-white rounded-2xl shadow-xl border border-slate-200 p-8 text-center">
+            <div class="inline-block bg-amber-100 text-amber-800 p-4 rounded-full text-4xl mb-3 shadow-inner">🏆</div>
+            <h2 class="text-3xl font-extrabold text-slate-800">¡Nivel Completado con Éxito!</h2>
+            <p class="text-slate-600 mt-1">Has superado los ejercicios mágicos del Tema 1.</p>
+
+            <div class="my-6 p-6 bg-purple-50 border border-purple-200 rounded-2xl max-w-sm mx-auto shadow-sm">
+                <span class="text-xs uppercase font-bold tracking-wider text-purple-400">Puntuación Total</span>
+                <div class="text-4xl font-black text-purple-700 mt-1"><span id="final-score">0</span> pts</div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-3">
+                <button onclick="resetApp()" class="bg-purple-700 hover:bg-purple-800 text-white font-bold px-6 py-3 rounded-xl transition shadow cursor-pointer">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> Elegir otro nivel
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL DE AYUDA -->
+    <div id="help-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-amber-200 card-pop">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2 text-amber-700 font-bold text-lg">
+                    <i class="fa-solid fa-brain"></i> Consejos Didácticos
+                </div>
+                <button onclick="toggleHelpModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <div class="py-4">
+                <p id="help-content-text" class="text-slate-700 text-sm leading-relaxed"></p>
+            </div>
+            <div class="pt-2 flex justify-end">
+                <button onclick="toggleHelpModal()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition cursor-pointer">
+                    ¡Entendido, a resolver!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LÓGICA DE JUEGO SIN ERRORES -->
+    <script>
+        const quizData = {
+            1: {
+                levelTitle: "Nivel 1: Muggle curioso",
+                pointsPerQ: 10,
+                questions: [
+                    {
+                        type: "4-opciones",
+                        question: "¿Cuál es la descomposición correcta del número de galeones 7.348.105?",
+                        options: [
+                            { text: "7 U. de millón + 3 CM + 4 DM + 8 UM + 1 C + 5 U", isCorrect: true },
+                            { text: "7 CM + 3 DM + 4 UM + 8 C + 1 D + 5 U", isCorrect: false },
+                            { text: "7 D. de millón + 3 CM + 4 DM + 8 UM + 1 D + 5 U", isCorrect: false },
+                            { text: "7 U. de millón + 3 DM + 4 UM + 8 C + 1 D + 5 U", isCorrect: false }
+                        ],
+                        help: "Fíjate en las posiciones: U. de millón, CM, DM, UM, C, D, U. Atento a las decenas (0).",
+                        feedbackCorrect: "¡Excelente descomposición!",
+                        feedbackIncorrect: "Revisa bien: 7 es U. de millón y hay 0 decenas."
+                    },
+                    {
+                        type: "vf",
+                        question: "¿Es Verdadero o Falso? El número 'Seiscientos catorce mil setecientos veintitrés' se escribe en cifras como 614.723.",
+                        options: [
+                            { text: "VERDADERO", isCorrect: true },
+                            { text: "FALSO", isCorrect: false }
+                        ],
+                        help: "'Seiscientos catorce mil' = 614.000. 'Setecientos veintitrés' = 723.",
+                        feedbackCorrect: "¡Correcto! Es totalmente Verdadero.",
+                        feedbackIncorrect: "Atención: Seiscientos catorce mil (614) + setecientos veintitrés (723) = 614.723."
+                    },
+                    {
+                        type: "4-opciones",
+                        question: "En la biblioteca hay un libro antiguo con el año romano 'XCII'. ¿A qué número equivale?",
+                        options: [
+                            { text: "92", isCorrect: true },
+                            { text: "112", isCorrect: false },
+                            { text: "98", isCorrect: false },
+                            { text: "82", isCorrect: false }
+                        ],
+                        help: "X (10) delante de C (100) resta: 100 - 10 = 90. Luego suma II (2).",
+                        feedbackCorrect: "¡Muy bien! XC es 90 e II es 2.",
+                        feedbackIncorrect: "Recuerda: la X a la izquierda de la C resta 10 a 100."
+                    },
+                    {
+                        type: "hueco",
+                        question: "Completa el hueco que falta: El número 8.541.200 tiene ____ Centenas de Millar (CM).",
+                        options: [
+                            { text: "5", isCorrect: true },
+                            { text: "8", isCorrect: false },
+                            { text: "4", isCorrect: false },
+                            { text: "1", isCorrect: false }
+                        ],
+                        help: "Cuenta las posiciones desde la derecha: U, D, C, UM, DM, CM... La sexta cifra.",
+                        feedbackCorrect: "¡Acierto! La cifra 5 ocupa las Centenas de Millar.",
+                        feedbackIncorrect: "Cuenta 6 posiciones desde la derecha: las CM son la cifra 5."
+                    },
+                    {
+                        type: "vf",
+                        question: "¿Es Verdadero o Falso? En el número 3.000.005 la cifra de las Unidades de millón vale 3.000.000 de unidades.",
+                        options: [
+                            { text: "VERDADERO", isCorrect: true },
+                            { text: "FALSO", isCorrect: false }
+                        ],
+                        help: "3 Unidades de millón equivalen a 3.000.000 de unidades simples.",
+                        feedbackCorrect: "¡Verdadero! Vale 3 millones de unidades.",
+                        feedbackIncorrect: "Recordatorio: 1 U. de millón = 1.000.000 U, luego 3 U. de millón = 3.000.000 U."
+                    }
+                ]
+            },
+            2: {
+                levelTitle: "Nivel 2: Elfo doméstico",
+                pointsPerQ: 15,
+                questions: [
+                    {
+                        type: "4-opciones",
+                        question: "¿En cuál de estos números la cifra de las Centenas de Millar (CM) vale 800.000 unidades?",
+                        options: [
+                            { text: "6.875.210", isCorrect: true },
+                            { text: "85.307", isCorrect: false },
+                            { text: "7.185.265", isCorrect: false },
+                            { text: "5.918.712", isCorrect: false }
+                        ],
+                        help: "Busca la cifra 8 en la sexta posición desde la derecha.",
+                        feedbackCorrect: "¡Acierto! En 6.875.210 el 8 vale 800.000 U.",
+                        feedbackIncorrect: "Recuerda: la 6ª posición desde la derecha son las CM."
+                    },
+                    {
+                        type: "hueco",
+                        question: "En la tienda de Ollivander, una varita se fabricó en el año MMXXVI. ¿Qué número representa en el sistema decimal?",
+                        options: [
+                            { text: "2026", isCorrect: true },
+                            { text: "2260", isCorrect: false },
+                            { text: "2016", isCorrect: false },
+                            { text: "2206", isCorrect: false }
+                        ],
+                        help: "MM = 2.000, XX = 20, VI = 6.",
+                        feedbackCorrect: "¡Correcto! 2000 + 20 + 6 = 2026.",
+                        feedbackIncorrect: "Desglosa: MM=2000, XX=20, VI=6."
+                    },
+                    {
+                        type: "4-opciones",
+                        question: "Ordena de MENOR a MAYOR los tres números: 3.900.000, 2.890.000 y 2.990.000.",
+                        options: [
+                            { text: "2.890.000 < 2.990.000 < 3.900.000", isCorrect: true },
+                            { text: "3.900.000 < 2.990.000 < 2.890.000", isCorrect: false },
+                            { text: "2.990.000 < 2.890.000 < 3.900.000", isCorrect: false },
+                            { text: "2.890.000 < 3.900.000 < 2.990.000", isCorrect: false }
+                        ],
+                        help: "Compara de izquierda a derecha: 2.890.000 es el menor.",
+                        feedbackCorrect: "¡Ordenación perfecta!",
+                        feedbackIncorrect: "Compara cifras: 2.890.000 va antes que 2.990.000."
+                    },
+                    {
+                        type: "vf",
+                        question: "¿Es Verdadero o Falso? El número romano CDXL equivale a 440.",
+                        options: [
+                            { text: "VERDADERO", isCorrect: true },
+                            { text: "FALSO", isCorrect: false }
+                        ],
+                        help: "CD = 400 (500-100) y XL = 40 (50-10). Total = 440.",
+                        feedbackCorrect: "¡Verdadero! CD (400) + XL (40) = 440.",
+                        feedbackIncorrect: "Es Verdadero: CD es 400 y XL es 40."
+                    },
+                    {
+                        type: "hueco",
+                        question: "Completa la relación: El número 4.200.000 es ________ que 4.020.000.",
+                        options: [
+                            { text: "MAYOR (>)", isCorrect: true },
+                            { text: "MENOR (<)", isCorrect: false },
+                            { text: "IGUAL (=)", isCorrect: false }
+                        ],
+                        help: "Compara las Centenas de Millar: 2 CM es más que 0 CM.",
+                        feedbackCorrect: "¡Correcto! 4.200.000 es mayor.",
+                        feedbackIncorrect: "Atención a la cifra de las CM: 2 es mayor que 0."
+                    }
+                ]
+            },
+            3: {
+                levelTitle: "Nivel 3: Alumno Hogwarts",
+                pointsPerQ: 20,
+                questions: [
+                    {
+                        type: "4-opciones",
+                        question: "Tres casas tienen: Gryffindor (1.300.000), Slytherin (1.375.000) y Ravenclaw (1.320.000). ¿Qué casa tiene MÁS de 1.310.000 pero MENOS de 1.350.000?",
+                        options: [
+                            { text: "Ravenclaw (1.320.000)", isCorrect: true },
+                            { text: "Gryffindor (1.300.000)", isCorrect: false },
+                            { text: "Slytherin (1.375.000)", isCorrect: false },
+                            { text: "Ninguna de las tres", isCorrect: false }
+                        ],
+                        help: "Busca un número entre 1.310.000 y 1.350.000.",
+                        feedbackCorrect: "¡Correcto! Ravenclaw está en ese rango.",
+                        feedbackIncorrect: "Slytherin se pasa (1.375.000) y Gryffindor no llega (1.300.000)."
+                    },
+                    {
+                        type: "4-opciones",
+                        question: "Expresa 15.843 en números romanos utilizando la raya superior de millar:",
+                        options: [
+                            { text: "XV̅DCCCXLIII", isCorrect: true },
+                            { text: "XV.DCCCCXLIII", isCorrect: false },
+                            { text: "XV.DCCCXXXXIII", isCorrect: false },
+                            { text: "XVDCCCXLIII", isCorrect: false }
+                        ],
+                        help: "Una raya superior sobre XV multiplica por 1.000 (15.000).",
+                        feedbackCorrect: "¡Excelente! XV̅ = 15.000 + DCCCXLIII = 843.",
+                        feedbackIncorrect: "Recuerda que la raya superior multiplica por 1.000."
+                    },
+                    {
+                        type: "hueco",
+                        question: "En el número 15.701.000, la cifra 7 ocupa la posición de las ____ y vale 700.000 U.",
+                        options: [
+                            { text: "Centenas de Millar (CM)", isCorrect: true },
+                            { text: "Decenas de Millar (DM)", isCorrect: false },
+                            { text: "Unidades de Millón (UMil)", isCorrect: false },
+                            { text: "Centenas (C)", isCorrect: false }
+                        ],
+                        help: "Sexta cifra desde la derecha.",
+                        feedbackCorrect: "¡Muy bien! Centenas de Millar.",
+                        feedbackIncorrect: "Cuenta las posiciones desde la derecha: es la 6ª casilla (CM)."
+                    },
+                    {
+                        type: "vf",
+                        question: "¿Es Verdadero o Falso? El número romano MCMX equivale a 1.910.",
+                        options: [
+                            { text: "VERDADERO", isCorrect: true },
+                            { text: "FALSO", isCorrect: false }
+                        ],
+                        help: "M = 1000, CM = 900 (1000-100), X = 10. Total = 1.910.",
+                        feedbackCorrect: "¡Verdadero! M (1000) + CM (900) + X (10) = 1910.",
+                        feedbackIncorrect: "Es Verdadero: CM es 900."
+                    },
+                    {
+                        type: "4-opciones",
+                        question: "¿Cuál es la descomposición del número 60.421.788?",
+                        options: [
+                            { text: "6 D. de millón + 4 CM + 2 DM + 1 UM + 7 C + 8 D + 8 U", isCorrect: true },
+                            { text: "6 U. de millón + 4 CM + 2 DM + 1 UM + 7 C + 8 D + 8 U", isCorrect: false },
+                            { text: "6 D. de millón + 4 DM + 2 UM + 1 C + 7 D + 8 U", isCorrect: false },
+                            { text: "60 U. de millón + 42 CM + 17 C + 88 U", isCorrect: false }
+                        ],
+                        help: "60 millones son 6 Decenas de millón y 0 Unidades de millón.",
+                        feedbackCorrect: "¡Perfecto! Has descompuesto las 8 cifras.",
+                        feedbackIncorrect: "Cuidado: 60 millones = 6 Decenas de millón + 0 U. de millón."
+                    }
+                ]
+            },
+            4: {
+                levelTitle: "Nivel 4: Maestría Mágica",
+                pointsPerQ: 25,
+                questions: [
+                    {
+                        type: "4-opciones",
+                        question: "Código del dragón: Es un número mayor que 10.000.000 y menor que 12.000.000, y su cifra de las centenas de millar es 9. ¿Cuál es?",
+                        options: [
+                            { text: "11.920.000", isCorrect: true },
+                            { text: "9.950.000", isCorrect: false },
+                            { text: "12.900.000", isCorrect: false },
+                            { text: "10.890.000", isCorrect: false }
+                        ],
+                        help: "Entre 10M y 12M con un 9 en la sexta posición.",
+                        feedbackCorrect: "¡Dragón amansado! 11.920.000 cumple todas las condiciones.",
+                        feedbackIncorrect: "12.900.000 se pasa de 12 millones."
+                    },
+                    {
+                        type: "4-opciones",
+                        question: "Descomposición con trampa: '8 C. de millón + 4 U. de millón + 6 CM + 6 DM + 5 UM + 4 C + 2 D'. ¿Qué número es?",
+                        options: [
+                            { text: "804.665.420", isCorrect: true },
+                            { text: "840.665.420", isCorrect: false },
+                            { text: "84.665.420", isCorrect: false },
+                            { text: "804.665.402", isCorrect: false }
+                        ],
+                        help: "Ojo: ¡No hay Decenas de millón, coloca un 0 en esa casilla!",
+                        feedbackCorrect: "¡Genial! 8 Centenas de millón + 0 Decenas + 4 Unidades = 804.665.420.",
+                        feedbackIncorrect: "Fíjate en la trampa: faltan las Decenas de millón (0)."
+                    },
+                    {
+                        type: "vf",
+                        question: "¿Es Verdadero o Falso? Un número de 7 cifras siempre empieza por las Unidades de Millón.",
+                        options: [
+                            { text: "VERDADERO", isCorrect: true },
+                            { text: "FALSO", isCorrect: false }
+                        ],
+                        help: "1º U, 2º D, 3º C, 4º UM, 5º DM, 6º CM, 7º U. de millón.",
+                        feedbackCorrect: "¡Verdadero! La séptima casilla corresponde a las U. de millón.",
+                        feedbackIncorrect: "Es Verdadero: contando de derecha a izquierda, la 7ª cifra son U. de millón."
+                    },
+                    {
+                        type: "hueco",
+                        question: "Si sumamos 1 Unidad de millón a 6.999.999 obtenemos exactamente _________.",
+                        options: [
+                            { text: "7.999.999", isCorrect: true },
+                            { text: "7.000.000", isCorrect: false },
+                            { text: "8.000.000", isCorrect: false },
+                            { text: "6.999.000", isCorrect: false }
+                        ],
+                        help: "Suma 1 a la cifra de las Unidades de millón (6 + 1 = 7).",
+                        feedbackCorrect: "¡Correcto! 6M + 1M = 7M, manteniendo las demás cifras.",
+                        feedbackIncorrect: "Solo cambia la casilla de las U. de millón: 6 + 1 = 7."
+                    },
+                    {
+                        type: "4-opciones",
+                        question: "¿Cuál de los siguientes números NO tiene ninguna cifra igual a 0 y está entre 900.000 y 1.000.000?",
+                        options: [
+                            { text: "987.654", isCorrect: true },
+                            { text: "905.238", isCorrect: false },
+                            { text: "1.000.000", isCorrect: false },
+                            { text: "899.999", isCorrect: false }
+                        ],
+                        help: "Debe ser de 6 cifras (empieza por 9) y NO llevar ningún 0.",
+                        feedbackCorrect: "¡Acierto! 987.654 no tiene ceros y es mayor que 900.000.",
+                        feedbackIncorrect: "905.238 tiene un cero en la centena de millar, 987.654 no tiene ninguno."
+                    }
+                ]
+            }
+        };
+
+        let currentLevel = 1;
+        let currentQuestionIndex = 0;
+        let totalScore = 0;
+        let answered = false;
+        let currentShuffledOptions = [];
+
+        function toggleDyslexiaMode() {
+            document.body.classList.toggle('dyslexia-friendly');
+        }
+
+        function shuffle(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startLevel(levelNum) {
+            currentLevel = levelNum;
+            currentQuestionIndex = 0;
+            answered = false;
+
+            document.getElementById('level-selection').classList.add('hidden');
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('notebook-screen').classList.add('hidden');
+            document.getElementById('quiz-zone').classList.remove('hidden');
+
+            document.getElementById('level-badge').innerText = quizData[currentLevel].levelTitle;
+            loadQuestion();
+        }
+
+        function showNotebookChallenge() {
+            document.getElementById('level-selection').classList.add('hidden');
+            document.getElementById('quiz-zone').classList.add('hidden');
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('notebook-screen').classList.remove('hidden');
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const levelObj = quizData[currentLevel];
+            const qObj = levelObj.questions[currentQuestionIndex];
+
+            document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
+            document.getElementById('total-q-num').innerText = levelObj.questions.length;
+            document.getElementById('question-text').innerText = qObj.question;
+            document.getElementById('help-content-text').innerText = qObj.help;
+
+            const qTypeBadge = document.getElementById('q-type-badge');
+            if(qObj.type === 'vf') {
+                qTypeBadge.innerText = "Verdadero o Falso";
+                qTypeBadge.className = "text-[10px] font-black uppercase tracking-wider bg-amber-200 text-amber-900 px-2 py-0.5 rounded-md mb-2 inline-block";
+            } else if(qObj.type === 'hueco') {
+                qTypeBadge.innerText = "Completar el Hueco";
+                qTypeBadge.className = "text-[10px] font-black uppercase tracking-wider bg-blue-200 text-blue-900 px-2 py-0.5 rounded-md mb-2 inline-block";
+            } else {
+                qTypeBadge.innerText = "Selección Múltiple";
+                qTypeBadge.className = "text-[10px] font-black uppercase tracking-wider bg-purple-200 text-purple-900 px-2 py-0.5 rounded-md mb-2 inline-block";
+            }
+
+            const progressPercent = ((currentQuestionIndex) / levelObj.questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            document.getElementById('feedback-panel').classList.add('hidden');
+            
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = true;
+            nextBtn.className = "bg-slate-300 text-slate-500 cursor-not-allowed font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow";
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            currentShuffledOptions = shuffle(qObj.options);
+
+            currentShuffledOptions.forEach((optObj, index) => {
+                const optBtn = document.createElement('button');
+                optBtn.className = `option-btn w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-purple-400 hover:bg-purple-50/50 transition font-medium text-slate-800 flex items-center justify-between shadow-sm bg-white cursor-pointer`;
+                optBtn.innerHTML = `
+                    <span>${optObj.text}</span>
+                    <span class="w-6 h-6 rounded-full border border-slate-300 flex items-center justify-center text-xs text-slate-400 font-bold">${String.fromCharCode(65 + index)}</span>
+                `;
+                optBtn.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optBtn);
+            });
+        }
+
+        function selectOption(selectedIndex) {
+            if (answered) return;
+            answered = true;
+
+            const levelObj = quizData[currentLevel];
+            const qObj = levelObj.questions[currentQuestionIndex];
+            const optionsBtns = document.getElementById('options-container').children;
+
+            const feedbackPanel = document.getElementById('feedback-panel');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+
+            feedbackPanel.classList.remove('hidden');
+
+            const isCorrect = currentShuffledOptions[selectedIndex].isCorrect;
+
+            if (isCorrect) {
+                optionsBtns[selectedIndex].classList.remove('border-slate-200', 'bg-white');
+                optionsBtns[selectedIndex].classList.add('border-emerald-500', 'bg-emerald-100', 'text-emerald-900', 'font-bold');
+
+                feedbackPanel.className = "mt-6 p-4 rounded-xl text-sm border bg-emerald-50 border-emerald-300 text-emerald-900 flex items-start gap-3";
+                feedbackIcon.innerHTML = "✅";
+                feedbackTitle.innerText = "¡Encantamiento certero!";
+                feedbackText.innerText = qObj.feedbackCorrect;
+
+                totalScore += levelObj.pointsPerQ;
+                const scoreCounterEl = document.getElementById('score-counter');
+                scoreCounterEl.innerText = totalScore;
+                scoreCounterEl.parentElement.classList.add('pulse-score');
+                setTimeout(() => scoreCounterEl.parentElement.classList.remove('pulse-score'), 400);
+
+            } else {
+                optionsBtns[selectedIndex].classList.remove('border-slate-200', 'bg-white');
+                optionsBtns[selectedIndex].classList.add('border-red-400', 'bg-red-50', 'text-red-900');
+
+                currentShuffledOptions.forEach((opt, idx) => {
+                    if (opt.isCorrect) {
+                        optionsBtns[idx].classList.remove('border-slate-200', 'bg-white');
+                        optionsBtns[idx].classList.add('border-emerald-500', 'bg-emerald-50');
+                    }
+                });
+
+                feedbackPanel.className = "mt-6 p-4 rounded-xl text-sm border bg-amber-50 border-amber-300 text-amber-900 flex items-start gap-3";
+                feedbackIcon.innerHTML = "💡";
+                feedbackTitle.innerText = "Revisemos la varita:";
+                feedbackText.innerText = qObj.feedbackIncorrect;
+            }
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = false;
+            nextBtn.className = "bg-purple-700 hover:bg-purple-800 text-white font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow cursor-pointer";
+        }
+
+        function nextQuestion() {
+            const levelObj = quizData[currentLevel];
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < levelObj.questions.length) {
+                loadQuestion();
+            } else {
+                document.getElementById('progress-bar').style.width = '100%';
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-zone').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = totalScore;
+        }
+
+        function resetApp() {
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('quiz-zone').classList.add('hidden');
+            document.getElementById('notebook-screen').classList.add('hidden');
+            document.getElementById('level-selection').classList.remove('hidden');
+        }
+
+        function toggleHelpModal() {
+            document.getElementById('help-modal').classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
