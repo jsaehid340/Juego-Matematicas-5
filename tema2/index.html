@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cerebrito Matemático · Tema 2</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Lexend,"Trebuchet MS",system-ui,sans-serif;color:#f5f0ff;background:radial-gradient(ellipse at top,#1e3a8a,#0f172a 70%) fixed;overflow-x:hidden}
+body.dys{letter-spacing:.05em;word-spacing:.15em;line-height:1.8;font-size:1.05rem}
+.stars{position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(1.5px 1.5px at 90px 80px,#93c5fd,transparent),radial-gradient(2px 2px at 160px 140px,#fff,transparent);background-size:200px 200px;animation:tw 3s infinite alternate}
+@keyframes tw{from{opacity:.3}to{opacity:1}}
+.wrap{position:relative;max-width:820px;margin:0 auto;padding:14px}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+h1{margin:0;font-size:1.3rem}h1 small{display:block;font-size:.7rem;font-weight:400;opacity:.7}
+.logo{display:inline-block;animation:fl 3s ease-in-out infinite;font-size:1.8rem}
+@keyframes fl{50%{transform:translateY(-6px) rotate(-8deg)}}
+.pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:6px 13px;font-weight:700;color:#fff;font:inherit;cursor:pointer}
+.gold{background:#fbbf24;color:#1e1b4b;border:0}
+.card{background:rgba(255,255,255,.08);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:22px;animation:pop .35s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.94);opacity:0}}
+.hide{display:none!important}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:16px}
+.lv{text-align:left;color:inherit;font:inherit;cursor:pointer;border:2px solid var(--c);background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.03));border-radius:18px;padding:16px;transition:.2s}
+.lv:hover{transform:translateY(-5px) rotate(-1deg);box-shadow:0 10px 30px var(--c)}
+.lv b{font-size:1.1rem}.lv i{font-size:2rem;font-style:normal;display:block}.lv small{opacity:.8;display:block;margin-top:4px}
+.big{width:100%;margin-top:16px;padding:18px;border-radius:18px;border:2px solid #fbbf24;background:linear-gradient(90deg,#0284c7,#2563eb,#7c3aed);color:#fff;font:inherit;font-weight:700;cursor:pointer;text-align:left}
+.bar{height:12px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden}.bar div{height:100%;width:0;background:linear-gradient(90deg,#fbbf24,#38bdf8);transition:.4s}
+.tag{display:inline-block;background:#fbbf24;color:#1e1b4b;font-size:.7rem;font-weight:800;padding:3px 9px;border-radius:9px;text-transform:uppercase}
+#qt{font-size:1.25rem;margin:12px 0}
+.opt{display:block;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border-radius:14px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:inherit;font:inherit;cursor:pointer;transition:.15s}
+.opt:hover:not(:disabled){border-color:#fbbf24;transform:translateX(5px)}
+.ok{background:rgba(16,185,129,.4)!important;border-color:#10b981!important}
+.bad{background:rgba(239,68,68,.4)!important;border-color:#ef4444!important}
+.sel{border-color:#fbbf24!important;background:rgba(251,191,36,.3)!important}
+.shake{animation:sk .4s}@keyframes sk{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.inp{width:100%;padding:14px;font:inherit;font-size:1.2rem;border-radius:14px;border:2px solid #fbbf24;background:rgba(0,0,0,.3);color:#fff;margin-bottom:10px}
+.btn{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1e1b4b;border:0;border-radius:14px;padding:12px 22px;font:inherit;font-weight:800;cursor:pointer;transition:.15s}
+.btn:hover:not(:disabled){transform:scale(1.05)}.btn:disabled{opacity:.35;cursor:not-allowed}
+.chip{display:inline-block;padding:10px 15px;margin:4px;border-radius:12px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1e1b4b;font-weight:800;cursor:grab;touch-action:none;user-select:none}
+.ghost{position:fixed;transform:translate(-50%,-50%) rotate(-5deg);pointer-events:none;z-index:99;box-shadow:0 12px 30px #000a}
+.dim{opacity:.3}.chip.sel{outline:3px solid #fff}
+.zs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:10px}
+.slot{min-height:64px;border:2px dashed rgba(255,255,255,.4);border-radius:14px;padding:6px}
+.slot small{display:block;opacity:.7;font-size:.75rem}
+.pool{min-height:64px;border:2px solid rgba(255,255,255,.15);background:rgba(0,0,0,.25);border-radius:14px;padding:6px;margin-bottom:12px}
+#fb{margin-top:14px;padding:14px;border-radius:14px;border:2px solid}
+.sp{position:fixed;font-size:26px;pointer-events:none;z-index:99;animation:fly 1.1s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(360deg);opacity:0}}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+.trophy{font-size:4rem;animation:fl 2s infinite}
+sup{font-size:0.75em;line-height:0}
+@media(max-width:520px){.mt{grid-template-columns:1fr}}
+</style></head>
+<body><div class="stars"></div>
+<div class="wrap">
+<header>
+ <div style="display:flex;gap:10px;align-items:center"><span class="logo">🧪</span><h1>Cerebrito Matemático<small>Tema 2 · Multiplicaciones, Operaciones Combinadas y Potencias · 5º</small></h1></div>
+ <div style="display:flex;gap:8px"><button class="pill" onclick="document.body.classList.toggle('dys')">👁️ Lectura fácil</button><span class="pill">🔥 <span id="st">0</span></span><span class="pill gold">⭐ <span id="sc">0</span></span></div>
+</header>
+
+<section id="home" class="card">
+ <div style="text-align:center"><span class="tag">Laboratorio de Alquimia Operativa</span><h2 style="margin:8px 0">Elige tu desafío</h2><div style="opacity:.8;font-size:.9rem">Calcula, une, ordena, clasifica y resuelve. ¡Consigue 3 estrellas en cada nivel!</div></div>
+ <div class="grid" id="lvs"></div>
+ <button class="big" onclick="chal()">📓 RETO FINAL EN LIBRETA · Operación Combinada Magistral <span style="float:right">➜</span></button>
+</section>
+
+<section id="quiz" class="card hide">
+ <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px"><b id="lb"></b><span>Pregunta <span id="qn"></span></span></div>
+ <div class="bar"><div id="pr"></div></div>
+ <div style="margin-top:14px"><span class="tag" id="tag"></span></div>
+ <h3 id="qt"></h3>
+ <button class="pill" onclick="hint()">🎩 Pista del Sombrero (mitad de puntos)</button>
+ <div id="hn" class="hide" style="margin-top:10px;padding:10px;background:rgba(251,191,36,.2);border-radius:12px"></div>
+ <div id="act" style="margin-top:14px"></div>
+ <div id="fb" class="hide"><b id="ft"></b><div id="fx"></div></div>
+ <div class="row"><button class="pill" onclick="home()">⌂ Menú</button><button class="btn" id="nx" disabled onclick="next()">Siguiente ➜</button></div>
+</section>
+
+<section id="chal" class="card hide" style="text-align:center">
+ <span class="tag">⚡ Superdesafío de libreta</span><h2>El Gran Reto de las Operaciones Combinadas</h2>
+ <p>Abre tu libreta, copia la expresión paso a paso respetando la jerarquía y halla el resultado:</p>
+ <div style="font-size:clamp(1.2rem,4vw,2rem);font-weight:800;color:#fbbf24;margin:18px 0;word-break:break-word">
+  3 × [ (15 + 5) : 4 + 10<sup>2</sup> ] - ( 8 × 6 - 20 : 4 )
+ </div>
+ <div style="text-align:left;background:rgba(255,255,255,.08);border-radius:14px;padding:14px;font-size:.9rem;margin-bottom:16px">
+  🎩 <b>Recordatorio de jerarquía:</b><br>
+  1.º Resuelve los paréntesis interiores primero.<br>
+  2.º Calcula las potencias.<br>
+  3.º Resuelve lo que queda dentro de los corchetes [ ].<br>
+  4.º Haz las multiplicaciones y restas finales de izquierda a derecha.
+ </div>
+ 
+ <div style="margin-top:14px;background:rgba(0,0,0,.25);padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,.2)">
+  <label style="display:block;margin-bottom:8px;font-weight:700">Comprueba tu resultado final:</label>
+  <input id="chal_in" class="inp" type="number" placeholder="Introduce tu respuesta aquí..." style="max-width:280px;margin:0 auto 10px auto;display:block">
+  <button class="btn" onclick="checkChal()">Validar resultado en libreta</button>
+  <div id="chal_fb" class="hide" style="margin-top:12px;padding:10px;border-radius:12px;font-weight:700"></div>
+ </div>
+
+ <div class="row" style="justify-content:center;margin-top:20px"><button class="pill" onclick="home()">⌂ Volver al menú</button></div>
+</section>
+
+<section id="end" class="card hide" style="text-align:center">
+ <div class="trophy">🏆</div><h2 id="et"></h2><div style="font-size:2.5rem" id="es"></div>
+ <p id="ep" style="font-size:1.1rem"></p>
+ <div class="row" style="justify-content:center"><button class="btn" onclick="start(lv)">↻ Repetir nivel</button><button class="pill" onclick="home()">⌂ Menú</button></div>
+</section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),el=(t,c)=>{const e=document.createElement(t);e.className=c||'';return e};
+const sh=a=>[...a].sort(()=>Math.random()-.5);
+let S={};try{S=JSON.parse(localStorage.getItem('cm5_t2')||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem('cm5_t2',JSON.stringify(S))}catch(e){}};
+const T={mc:'Elige la respuesta',vf:'Verdadero o falso',fill:'Escribe la respuesta',match:'Une las parejas',order:'Arrastra para ordenar',sort:'Arrastra para clasificar'};
+
+const D=[
+{n:'Nivel 1 · Aprendiz de Multiplicador',ic:'⚡',p:10,c:'#f59e0b',d:'Propiedad distributiva y multiplicaciones prácticas',qs:[
+ {t:'mc',q:'¿Cuál es la forma correcta de aplicar la propiedad distributiva a 4 × (6 + 3)?',o:['4 × 6 + 4 × 3','4 × 6 + 3','4 + 6 × 4 + 3','4 × 6 × 3'],h:'Multiplica el factor de fuera por CADA término de dentro del paréntesis.',e:'4 × (6 + 3) = 4 × 6 + 4 × 3 = 24 + 12 = 36.'},
+ {t:'vf',q:'Al calcular 629 × 3.400, el resultado de multiplicar 629 × 34 debe llevar exactamente dos ceros al final.',a:1,h:'En multiplicaciones con ceros finales, se añaden todos los ceros al final del producto.',e:'Efectivamente: 629 × 34 = 21.386 ➔ Añadimos dos ceros = 2.138.600.'},
+ {t:'match',q:'Une cada expresión distributiva con su cálculo resuelto.',pairs:[['3 × (5 + 2)','15 + 6 = 21'],['4 × (8 - 3)','32 - 12 = 20'],['5 × (10 + 4)','50 + 20 = 70'],['2 × (9 - 5)','18 - 10 = 8']],h:'Aplica a × b ± a × c.',e:'3×5+3×2=21 · 4×8-4×3=20 · 5×10+5×4=70 · 2×9-2×5=8'},
+ {t:'fill',q:'Calcula el resultado final de la multiplicación aplicando la descomposición: 3 × 23 = 3 × (20 + 3) = 60 + 9 = ___',a:['69'],h:'Suma los dos productos parciales obtenidos (60 + 9).',e:'3 × 23 = 60 + 9 = 69.'},
+ {t:'fill',q:'Coloca en vertical y calcula en tu cuaderno el producto de esta multiplicación con un cero intermedio: 852 × 607',a:['517164'],h:'Multiplica 852 × 7 y luego 852 × 6 dejando dos huecos.',e:'852 × 607 = 517.164.'}]},
+
+{n:'Nivel 2 · Guardián de la Jerarquía',ic:'⚖️',p:15,c:'#10b981',d:'Operaciones combinadas y jerarquía de cálculo',qs:[
+ {t:'mc',q:'¿Qué operación se debe realizar PRIMERO en: 8 + 4 × 5?',o:['La multiplicación (4 × 5)','La suma (8 + 4)','Da igual el orden','De derecha a izquierda'],h:'La multiplicación siempre tiene prioridad sobre la suma.',e:'Primero hacemos 4 × 5 = 20, y luego 8 + 20 = 28.'},
+ {t:'order',q:'Ordena de PRIMERO a ÚLTIMO los pasos para resolver: 20 - (3 + 5) : 2',items:['Resolver paréntesis: 3 + 5 = 8','Hacer la división: 8 : 2 = 4','Hacer la resta: 20 - 4 = 16','Resultado final: 16'],h:'1.º Paréntesis, 2.º División, 3.º Resta.',e:'El orden correcto de jerarquía da como resultado 16.'},
+ {t:'sort',q:'Clasifica estas expresiones según su resultado final.',zones:['Resultado igual a 15','Resultado igual a 25'],items:[['3 + 4 × 3',0],['5 × 5',1],['(9 - 4) × 5',1],['20 - 10 : 2',0],['30 : 2',0],['30 - 5',1]],h:'Calcula cada expresión respetando la jerarquía.',e:'3+12=15 · 25=25 · 5×5=25 · 20-5=15 · 15=15 · 25=25'},
+ {t:'vf',q:'Al calcular 3 + 2 × (7 - 7), el resultado final da 5.',a:0,h:'Resuelve primero el paréntesis (7 - 7 = 0) y multiplica por 2.',e:'Falso: (7 - 7) = 0 ➔ 2 × 0 = 0 ➔ 3 + 0 = 3 (no 5).'},
+ {t:'fill',q:'Calcula el resultado exacto de: 15 + 4 - 20 : 5',a:['15'],h:'Primero realiza la división (20 : 5 = 4) y luego resuelve de izquierda a derecha.',e:'15 + 4 - 4 = 15.'}]},
+
+{n:'Nivel 3 · Maestro de las Potencias',ic:'🔮',p:20,c:'#3b82f6',d:'Potencias, cálculo de valores y potencias de base 10',qs:[
+ {t:'mc',q:'¿Cómo se expresa en forma de potencia el producto 5 × 5 × 5 × 5?',o:['5<sup>4</sup>','5 × 4','4<sup>5</sup>','20'],h:'La base es el factor repetido (5) y el exponente las veces que se repite (4).',e:'5 × 5 × 5 × 5 = 5<sup>4</sup> (5 elevado a 4).'},
+ {t:'match',q:'Une cada potencia con su valor numérico resuelto.',pairs:[['10<sup>3</sup>','1.000'],['3<sup>2</sup>','9'],['2<sup>3</sup>','8'],['10<sup>5</sup>','100.000']],h:'10<sup>n</sup> es un 1 seguido de n ceros; 3<sup>2</sup>=3×3; 2<sup>3</sup>=2×2×2.',e:'10<sup>3</sup>=1.000 · 3<sup>2</sup>=9 · 2<sup>3</sup>=8 · 10<sup>5</sup>=100.000'},
+ {t:'mc',q:'¿Cuál es el valor exacto de la potencia de base diez 10<sup>4</sup>?',o:['10.000','1.000','40','100.000'],h:'Escribe un 1 seguido de 4 ceros.',e:'10<sup>4</sup> = 10.000.'},
+ {t:'order',q:'Ordena estas potencias de MENOR a MAYOR valor según su resultado.',items:['2<sup>3</sup>','3<sup>2</sup>','10<sup>1</sup>','5<sup>2</sup>'],h:'Calcula mentalmente sus valores: 2³=8, 3²=9, 10¹=10, 5²=25.',e:'2<sup>3</sup> (8) < 3<sup>2</sup> (9) < 10<sup>1</sup> (10) < 5<sup>2</sup> (25).'},
+ {t:'fill',q:'¿Cuántos ceros tiene el valor numérico de la potencia 10<sup>6</sup>?',a:['6'],h:'El número de ceros es idéntico al exponente.',e:'10<sup>6</sup> = 1.000.000 (contiene exactamente 6 ceros).'}]},
+
+{n:'Nivel 4 · Gran Alquimista de Problemas',ic:'🧪',p:25,c:'#a855f7',d:'Resolución de problemas con operaciones combinadas y potencias',qs:[
+ {t:'mc',q:'Pablo lleva 25 €. Compra un libro por 13 € y una carpeta por 4 €. ¿Qué expresión en una sola línea resuelve cuánto le queda?',o:['25 - (13 + 4)','25 - 13 + 4','25 + 13 - 4','25 : (13 - 4)'],h:'Resta la suma de los dos gastos al dinero total inicial.',e:'25 - (13 + 4) = 25 - 17 = 8 €.'},
+ {t:'mc',q:'En un almacén hay 4 furgonetas, cada una lleva 4 percheros, cada perchero 4 perchas y en cada percha 4 pantalones. ¿Cuántos pantalones hay en total?',o:['4<sup>4</sup> = 256','4 × 4 = 16','4<sup>3</sup> = 64','4 + 4 + 4 + 4 = 16'],h:'Es un producto de factores iguales: 4 × 4 × 4 × 4.',e:'4 × 4 × 4 × 4 = 4<sup>4</sup> = 256 pantalones.'},
+ {t:'sort',q:'Clasifica las situaciones según la expresión matemática que las resuelve.',zones:['3 × 5 - 4','15 - 4 × 2'],items:[['Tengo 3 billetes de 5 € y me gasto 4 €',0],['Tenía 15 € y he comprado 4 carpetas de 2 €',1],['Tengo 3 sobres con 5 cromos y pierdo 4',0],['Tenía 15 caramelos y regalé 4 bolsas de 2',1]],h:'Identifica los grupos multiplicativos y las restas correspondientes.',e:'3×5-4 representa 3 grupos de 5 menos 4; 15-4×2 representa 15 menos 4 grupos de 2.'},
+ {t:'fill',q:'Una panadería reparte 25 cestas con 120 barras de pan a cada uno de los 5 colegios de la zona. ¿Cuántas barras reparte en total?',a:['15000'],h:'Multiplica 5 colegios × 25 cestas × 120 barras.',e:'5 × 25 × 120 = 125 × 120 = 15.000 barras.'},
+ {t:'fill',q:'Un complejo deportivo tenía 1.250 socios el año pasado. Este año ha aumentado en 45 mujeres y 19 hombres. Si cada socio paga 350 € al año, ¿cuánto recauda en total este año?',a:['459900'],h:'Suma los socios totales: (1.250 + 45 + 19) y luego multiplica el total por 350 €.',e:'Socios totales = 1.314. Recaudación = 1.314 × 350 = 459.900 €.'}]}
+];
+
+let lv=0,qi=0,total=0,lvs=0,hits=0,streak=0,locked=false,hinted=false,sel=null;
+const show=id=>{['home','quiz','chal','end'].forEach(x=>$('#'+x).classList.toggle('hide',x!=id))};
+function home(){show('home');$('#lvs').innerHTML='';D.forEach((L,i)=>{const b=el('button','lv');b.style.setProperty('--c',L.c);b.innerHTML=`<i>${L.ic}</i><b>${L.n}</b><small>${L.d}</small><small>+${L.p} pts · ${'⭐'.repeat(S[i]||0)+'☆'.repeat(3-(S[i]||0))}</small>`;b.onclick=()=>start(i);$('#lvs').appendChild(b)})}
+function chal(){
+ $('#chal_in').value='';
+ $('#chal_fb').className='hide';
+ show('chal');
+}
+function checkChal(){
+ const val=$('#chal_in').value.trim();
+ const fb=$('#chal_fb');
+ fb.classList.remove('hide');
+ if(val==='272'){
+  fb.style.cssText='background:rgba(16,185,129,.3);color:#10b981;border:1px solid #10b981;margin-top:12px;padding:10px;border-radius:12px;font-weight:700';
+  fb.innerHTML='✨ ¡ENHORABUENA! Tu desarrollo en la libreta y el resultado son PERFECTOS. ¡Demuestras un gran dominio de la jerarquía!';
+  burst();
+ } else {
+  fb.style.cssText='background:rgba(239,68,68,.3);color:#f87171;border:1px solid #ef4444;margin-top:12px;padding:10px;border-radius:12px;font-weight:700';
+  fb.innerHTML='❌ El resultado no es correcto. Revisa bien el orden en tu libreta: paréntesis, potencias, corchetes y multiplicaciones. ¡Vuelve a intentarlo!';
+ }
+}
+
+function start(i){lv=i;qi=0;lvs=0;hits=0;show('quiz');$('#lb').textContent=D[i].n;draw()}
+function draw(){const L=D[lv],q=L.qs[qi];locked=false;hinted=false;sel=null;
+ $('#pr').style.width=qi/L.qs.length*100+'%';$('#qn').textContent=`${qi+1} de ${L.qs.length}`;
+ $('#qt').innerHTML=q.q;$('#tag').textContent=T[q.t];$('#fb').classList.add('hide');$('#hn').classList.add('hide');$('#nx').disabled=true;
+ const A=$('#act');A.innerHTML='';R[q.t](A,q)}
+function hint(){const q=D[lv].qs[qi];$('#hn').innerHTML='🎩 '+q.h;$('#hn').classList.remove('hide');hinted=true}
+function done(ok,partial){if(locked)return;locked=true;const L=D[lv],q=L.qs[qi];
+ let pts=0;if(ok||partial){pts=ok?L.p:Math.ceil(L.p/2);if(hinted)pts=Math.ceil(pts/2)}
+ if(ok){streak++;hits++;if(streak>=3)pts+=5;burst()}else streak=0;
+ total+=pts;lvs+=pts;$('#sc').textContent=total;$('#st').textContent=streak;
+ const f=$('#fb');f.classList.remove('hide');f.style.cssText=ok?'background:rgba(16,185,129,.25);border-color:#10b981':'background:rgba(251,191,36,.2);border-color:#fbbf24';
+ $('#ft').textContent=ok?sh(['✅ ¡Fórmula alquímica correcta!','✨ ¡Excelente cálculo!','🧪 ¡Diez puntos para tu laboratorio!'])[0]+(pts?` +${pts} pts`:''):'💡 Un despiste con la matraz… revisemos el procedimiento';
+ $('#fx').innerHTML=q.e;$('#nx').disabled=false;$('#nx').textContent=qi==L.qs.length-1?'Ver resultado ➜':'Siguiente ➜'}
+function next(){if(++qi<D[lv].qs.length)draw();else finish()}
+function finish(){const n=D[lv].qs.length,r=hits/n,st=r>=.8?3:r>=.6?2:1;S[lv]=Math.max(S[lv]||0,st);save();show('end');
+ $('#et').textContent=r==1?'¡Maestría Alquímica Absoluta!':'¡Nivel completado!';$('#es').textContent='⭐'.repeat(st)+'☆'.repeat(3-st);
+ $('#ep').textContent=`${hits} de ${n} aciertos · ${lvs} puntos en este nivel`;if(st==3){burst();setTimeout(burst,500)}}
+function burst(){for(let i=0;i<26;i++){const s=el('span','sp');s.textContent=['✨','⭐','🧪','⚡'][i%4];s.style.cssText=`left:${40+Math.random()*20}%;top:45%;--x:${(Math.random()-.5)*700}px;--y:${-Math.random()*400}px`;document.body.appendChild(s);setTimeout(()=>s.remove(),1200)}}
+
+/* ---- Actividades ---- */
+const R={
+mc(A,q){sh(q.o.map((x,i)=>[x,i])).forEach(([x,i])=>{const b=el('button','opt');b.innerHTML=x;b.dataset.c=i?'':1;b.onclick=()=>{if(locked)return;A.querySelector('[data-c="1"]').classList.add('ok');if(i)b.classList.add('bad');done(!i)};A.appendChild(b)})},
+vf(A,q){[['✅ VERDADERO',1],['❌ FALSO',0]].forEach(([x,v])=>{const b=el('button','opt');b.textContent=x;b.onclick=()=>{if(locked)return;const ok=!!q.a==!!v;b.classList.add(ok?'ok':'bad');done(ok)};A.appendChild(b)})},
+fill(A,q){A.innerHTML='<input id="in" class="inp" placeholder="Escribe tu respuesta…" autocomplete="off"><button class="btn" id="ck">Comprobar</button>';
+ const go=()=>{if(locked)return;const v=$('#in').value.toLowerCase().replace(/[.\s]/g,'');if(!v)return;const ok=q.a.includes(v);$('#in').classList.add(ok?'ok':'bad');done(ok)};
+ $('#ck').onclick=go;$('#in').onkeydown=e=>{if(e.key=='Enter')go()};$('#in').focus()},
+match(A,q){let m=0,bad=0,s=null;A.innerHTML='<div class="mt"><div id="ml"></div><div id="mr"></div></div>';
+ const mk=(box,arr,side)=>arr.forEach(([t,i])=>{const b=el('button','opt');b.innerHTML=t;b.onclick=()=>{if(locked||b.disabled)return;
+  if(!s||s.side==side){if(s)s.b.classList.remove('sel');s={b,i,side};b.classList.add('sel');return}
+  if(s.i==i){[s.b,b].forEach(x=>{x.disabled=true;x.classList.remove('sel');x.classList.add('ok')});s=null;if(++m==q.pairs.length)done(bad<2,true)}
+  else{bad++;const p=s.b;s=null;[p,b].forEach(x=>{x.classList.remove('sel');x.classList.add('shake','bad')});setTimeout(()=>[p,b].forEach(x=>x.classList.remove('shake','bad')),450)}};
+  $(box).appendChild(b)});
+ mk('#ml',sh(q.pairs.map((p,i)=>[p[0],i])),0);mk('#mr',sh(q.pairs.map((p,i)=>[p[1],i])),1)},
+order(A,q){const n=q.items.length;board(A,q,q.items.map((_,i)=>i==0?'1º Paso':i==n-1?n+'º Paso':(i+1)+'º Paso'),true,q.items.map((x,i)=>[x,i]))},
+sort(A,q){board(A,q,q.zones,false,q.items)}};
+
+function board(A,q,zn,single,items){
+ A.innerHTML='<div class="zs" id="zs"></div><div class="pool" id="pool"></div><button class="btn" id="ck">Comprobar</button>';
+ const pool=$('#pool');
+ const put=(c,s)=>{if(!s)s=pool;if(!single&&s!=pool||single&&s!=pool){const o=single&&s.querySelector('.chip');if(o&&o!==c)pool.appendChild(o)}s.appendChild(c);if(sel)sel.classList.remove('sel');sel=null};
+ zn.forEach(z=>{const d=el('div','slot');d.innerHTML=`<small>${z}</small>`;d.onclick=()=>{if(sel&&!locked)put(sel,d)};$('#zs').appendChild(d)});
+ pool.onclick=()=>{if(sel&&!locked)put(sel,pool)};
+ sh(items).forEach(([t,k])=>{const c=el('div','chip');c.innerHTML=t;c.dataset.k=k;c.onclick=e=>e.stopPropagation();
+  c.onpointerdown=e=>{if(locked)return;const sx=e.clientX,sy=e.clientY;let g=null;
+   const mv=ev=>{if(!g&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>6){g=c.cloneNode(true);g.classList.add('ghost');document.body.appendChild(g);c.classList.add('dim')}if(g){g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px'}};
+   const up=ev=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);
+    if(g){g.remove();c.classList.remove('dim');const t=document.elementFromPoint(ev.clientX,ev.clientY);put(c,t&&t.closest('.slot,.pool'))}
+    else{if(sel==c){c.classList.remove('sel');sel=null}else{if(sel)sel.classList.remove('sel');sel=c;c.classList.add('sel')}}};
+   addEventListener('pointermove',mv);addEventListener('pointerup',up)};
+  pool.appendChild(c)});
+ $('#ck').onclick=()=>{if(locked)return;let ok=!pool.children.length;[...$('#zs').children].forEach((z,i)=>{if(single&&!z.querySelector('.chip'))ok=false;z.querySelectorAll('.chip').forEach(c=>{const g=c.dataset.k==i;c.classList.add(g?'ok':'bad');if(!g)ok=false})});done(ok)}}
+home();
+</script></body></html>
