@@ -214,12 +214,28 @@ const RETOS_ANTERIORES = [
 ];
 
 /* =====================================================================
-   LÓGICA DE LA APLICACIÓN
+   LÓGICA DE LA APLICACIÓN (INTENTOS POR ALUMNO Y GRUPO)
    ===================================================================== */
-const KEY = 'liga_math_' + RETO_ACTUAL.id;
-let state = { tries: 0, lastName: '', lastGrp: '5ºA' };
-try { state = Object.assign(state, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e){}
-const saveState = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} };
+const BASE_KEY = 'liga_math_' + RETO_ACTUAL.id;
+let metaState = { lastName: '', lastGrp: '5ºA' };
+try { metaState = Object.assign(metaState, JSON.parse(localStorage.getItem(BASE_KEY + '_meta') || '{}')); } catch(e){}
+
+function getUserKey(){
+  const grp = $('#in_grp').value;
+  const cleanName = $('#in_name').value.trim().toLowerCase().replace(/\s+/g, '');
+  return `${BASE_KEY}_${grp}_${cleanName || 'anon'}`;
+}
+
+function getTries(){
+  try { return parseInt(localStorage.getItem(getUserKey()) || '0', 10); } catch(e){ return 0; }
+}
+
+function setTries(n){
+  try {
+    localStorage.setItem(getUserKey(), String(n));
+    localStorage.setItem(BASE_KEY + '_meta', JSON.stringify({ lastName: $('#in_name').value.trim(), lastGrp: $('#in_grp').value }));
+  } catch(e){}
+}
 
 function initReto(){
   $('#r_tag').textContent = RETO_ACTUAL.tag;
@@ -228,40 +244,45 @@ function initReto(){
   $('#r_desc').textContent = RETO_ACTUAL.enunciado;
   $('#r_art').innerHTML = RETO_ACTUAL.svg;
   $('#r_hint').innerHTML = '🎩 <b>Pista:</b> ' + RETO_ACTUAL.pista;
-  if(state.lastName) $('#in_name').value = state.lastName;
-  if(state.lastGrp) $('#in_grp').value = state.lastGrp;
+  if(metaState.lastName) $('#in_name').value = metaState.lastName;
+  if(metaState.lastGrp) $('#in_grp').value = metaState.lastGrp;
+  $('#in_name').addEventListener('input', renderTries);
+  $('#in_grp').addEventListener('change', renderTries);
   renderTries();
 }
 
 function renderTries(){
-  const max = 3, u = state.tries;
+  const max = 3, u = getTries();
   let dots = '';
   for(let i=1;i<=max;i++) dots += `<span class="dot ${i<=u?'used':''}"></span>`;
   const ptsNext = u===0 ? '100 pts' : u===1 ? '70 pts' : u===2 ? '50 pts' : '0 pts';
   $('#tries_ui').innerHTML = `${dots} <span>Envíos realizados: <b>${u} de ${max}</b> ${u<max ? `(Acierto: <b>${ptsNext}</b> · Participar: <b>10 pts</b>)` : '(Sin más envíos)'}</span>`;
   if(u >= max){
     $('#btn_send').disabled = true;
-    $('#btn_send').textContent = '🔒 Has agotado tus 3 envíos de esta semana';
+    $('#btn_send').textContent = '🔒 Este participante ya ha agotado sus 3 envíos';
     $('#in_ans').disabled = true;
+  } else {
+    $('#btn_send').disabled = false;
+    $('#btn_send').textContent = '🔒 Enviar respuesta secreta';
+    $('#in_ans').disabled = false;
   }
 }
 
 function sendAns(){
-  if(state.tries >= 3) return;
+  const u = getTries();
+  if(u >= 3) return;
   const grp = $('#in_grp').value;
   const name = $('#in_name').value.trim();
   const rawAns = $('#in_ans').value.trim();
   if(name.length < 3){ alert('Por favor, escribe tu nombre y la inicial de tu apellido (ej. Marta R.)'); $('#in_name').focus(); return; }
   if(!rawAns){ alert('Escribe tu resultado antes de enviar.'); $('#in_ans').focus(); return; }
 
-  state.tries++;
-  state.lastName = name;
-  state.lastGrp = grp;
-  saveState();
+  const nextTry = u + 1;
+  setTries(nextTry);
 
   const cleanAns = rawAns.toLowerCase().replace(/\s+/g,'');
   const isOk = RETO_ACTUAL.solucion.includes(cleanAns);
-  const pts = state.tries===1 ? 100 : state.tries===2 ? 70 : 50;
+  const pts = nextTry===1 ? 100 : nextTry===2 ? 70 : 50;
   const autoTag = isOk ? `✅ ACERTADO (${pts} pts)` : `❌ FALLO (+10 pts participación | puso: ${rawAns})`;
   const grpLabel = grp === 'INVITADOS' ? 'Invitados' : grp;
 
@@ -270,7 +291,7 @@ function sendAns(){
   fd.append(FIELDS.semana, RETO_ACTUAL.id);
   fd.append(FIELDS.grupo, grpLabel);
   fd.append(FIELDS.alumno, name);
-  fd.append(FIELDS.intento, `Intento ${state.tries}/3`);
+  fd.append(FIELDS.intento, `Intento ${nextTry}/3`);
   fd.append(FIELDS.resp, rawAns);
   fd.append(FIELDS.auto, autoTag);
 
@@ -279,10 +300,10 @@ function sendAns(){
   $('#in_ans').value = '';
   renderTries();
 
-  const rem = 3 - state.tries;
+  const rem = 3 - nextTry;
   const m = $('#send_msg');
   m.classList.remove('hide');
-  m.innerHTML = `🛰️ <b>¡Envío #${state.tries} recibido en el laboratorio!</b><br>
+  m.innerHTML = `🛰️ <b>¡Envío #${nextTry} recibido en el laboratorio!</b><br>
     Tu respuesta (<b>${rawAns}</b>) queda guardada en secreto para <b>${name} (${grpLabel})</b>.<br>
     <span style="font-size:.88rem;opacity:.9">${rem > 0 ? `Ya tienes asegurados tus puntos de participación. Si quieres mejorar tu resultado, aún te quedan ${rem} envío(s).` : 'Has completado tus 3 intentos. ¡Atento al ranking cuando el profe publique los resultados!'}</span>`;
 }
