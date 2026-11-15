@@ -20,18 +20,20 @@ h1{margin:0;font-size:1.3rem}h1 small{display:block;font-size:.72rem;font-weight
 .hide{display:none!important}
 .tag{display:inline-block;background:#fbbf24;color:#1e1b4b;font-size:.72rem;font-weight:800;padding:4px 10px;border-radius:9px;text-transform:uppercase;letter-spacing:.03em}
 .rules{background:linear-gradient(135deg,rgba(251,191,36,.16),rgba(56,189,248,.12));border:1px solid rgba(251,191,36,.45);border-radius:16px;padding:14px 16px;margin-bottom:18px;font-size:.92rem}
-.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:8px}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:8px}
 .r-box{background:rgba(15,23,42,.55);border-radius:10px;padding:8px 10px;text-align:center;border:1px solid rgba(255,255,255,.12)}
 .r-box b{color:#fbbf24;display:block;font-size:1.05rem}
+.r-box.part{border-color:rgba(56,189,248,.45)}
+.r-box.part b{color:#38bdf8}
 .art-box{background:rgba(15,23,42,.65);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:14px;margin:14px 0;text-align:center}
 .art-box svg{max-width:100%;height:auto;display:block;margin:0 auto}
-.form-grid{display:grid;grid-template-columns:130px 1fr 1fr;gap:10px;margin-top:12px}
+.form-grid{display:grid;grid-template-columns:150px 1fr 1fr;gap:10px;margin-top:12px}
 .inp{width:100%;padding:13px 14px;font:inherit;font-size:1rem;border-radius:14px;border:2px solid rgba(251,191,36,.6);background:rgba(15,23,42,.7);color:#fff}
 .inp:focus{outline:none;border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.25)}
 .btn{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1e1b4b;border:0;border-radius:14px;padding:13px 22px;font:inherit;font-weight:800;cursor:pointer;transition:.15s;width:100%;margin-top:10px;font-size:1.05rem}
 .btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 20px rgba(245,158,11,.35)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-.tries{display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;font-size:.88rem}
+.tries{display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;font-size:.88rem;flex-wrap:wrap;text-align:center}
 .dot{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4)}
 .dot.used{background:#fbbf24;border-color:#fbbf24;box-shadow:0 0 8px #fbbf24}
 .msg{margin-top:14px;padding:14px;border-radius:14px;border:2px solid #38bdf8;background:rgba(56,189,248,.16);font-weight:600;text-align:center}
@@ -49,6 +51,7 @@ th,td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255
 th{font-size:.78rem;text-transform:uppercase;opacity:.7;letter-spacing:.04em}
 tr:hover td{background:rgba(255,255,255,.04)}
 .badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.75rem;font-weight:700;background:rgba(56,189,248,.22);color:#7dd3fc}
+.badge.inv{background:rgba(192,132,252,.25);color:#e9d5ff}
 .arch-item{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:16px;margin-bottom:12px}
 @media(max-width:600px){.form-grid{grid-template-columns:1fr}.podium{gap:6px}.pod b{font-size:.88rem}}
 </style></head>
@@ -57,7 +60,7 @@ tr:hover td{background:rgba(255,255,255,.04)}
 <header>
   <div style="display:flex;gap:10px;align-items:center">
     <span class="logo">🏆</span>
-    <h1>Liga de Enigmas Matemáticos<small>Reto Semanal · 5º A y 5º B · Modo Misterio</small></h1>
+    <h1>Liga de Enigmas Matemáticos<small>Reto Semanal · 5º A, 5º B e Invitados · Modo Misterio</small></h1>
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap">
     <button class="pill" onclick="document.body.classList.toggle('dys')">👁️ Lectura fácil</button>
@@ -75,11 +78,12 @@ tr:hover td{background:rgba(255,255,255,.04)}
 <section id="sec_reto" class="card">
   <div class="rules">
     <div>🎯 <b>Reglas de puntuación y Modo Misterio:</b></div>
-    <div style="opacity:.9;margin-top:3px">No sabrás si has acertado hasta que se actualice el ranking. ¡Piensa bien antes de enviar!</div>
+    <div style="opacity:.9;margin-top:3px">No sabrás si has acertado hasta que se actualice el ranking. ¡Solo por participar ya ganas puntos!</div>
     <div class="rules-grid">
       <div class="r-box"><span>1.º intento</span><b>100 pts</b></div>
       <div class="r-box"><span>2.º intento</span><b>70 pts</b></div>
       <div class="r-box"><span>3.º intento</span><b>50 pts</b></div>
+      <div class="r-box part"><span>Participar (fallo)</span><b>10 pts</b></div>
     </div>
   </div>
 
@@ -100,9 +104,10 @@ tr:hover td{background:rgba(255,255,255,.04)}
   <div style="background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:16px;margin-top:14px">
     <div class="tries" id="tries_ui"></div>
     <div class="form-grid">
-      <select id="in_grp" class="inp" aria-label="Clase">
+      <select id="in_grp" class="inp" aria-label="Grupo">
         <option value="5ºA">5.º A</option>
         <option value="5ºB">5.º B</option>
+        <option value="INVITADOS">Invitados</option>
       </select>
       <input id="in_name" class="inp" placeholder="Tu nombre e inicial (ej. Hugo G.)" maxlength="25">
       <input id="in_ans" class="inp" placeholder="Tu resultado..." autocomplete="off">
@@ -123,6 +128,7 @@ tr:hover td{background:rgba(255,255,255,.04)}
       <button class="pill act" id="f_all" onclick="filterRank('ALL')">Todos</button>
       <button class="pill" id="f_5a" onclick="filterRank('5ºA')">5.º A</button>
       <button class="pill" id="f_5b" onclick="filterRank('5ºB')">5.º B</button>
+      <button class="pill" id="f_inv" onclick="filterRank('INVITADOS')">Invitados</button>
       <button class="pill" onclick="loadRank(true)" title="Actualizar">🔄</button>
     </div>
   </div>
@@ -131,7 +137,7 @@ tr:hover td{background:rgba(255,255,255,.04)}
   <div id="podium_box" class="podium hide"></div>
   <div style="overflow-x:auto">
     <table id="rank_tbl" class="hide">
-      <thead><tr><th>#</th><th>Alumno/a</th><th>Clase</th><th>Retos</th><th>Puntos</th></tr></thead>
+      <thead><tr><th>#</th><th>Participante</th><th>Grupo</th><th>Retos</th><th>Puntos</th></tr></thead>
       <tbody id="rank_body"></tbody>
     </table>
   </div>
@@ -172,7 +178,7 @@ const RETO_ACTUAL = {
   titulo: 'El Misterio de los Objetos Tecnológicos',
   enunciado: 'Observa con lupa cada fila, descubre cuánto vale cada objeto y calcula el resultado final. ¡Fíjate muy bien en todos los detalles y en el orden de las operaciones!',
   pista: 'Cuenta cuántos auriculares hay en la última fila y fíjate en el signo de multiplicar (×) antes de sumar.',
-  solucion: ['25'], // Respuestas válidas en minúsculas y sin espacios
+  solucion: ['25'],
   explicacion: 'Par de auriculares = 10 (1 auricular = 5) · Muñeco = 5 · Reloj = 4. En la última fila: 5 + 5 × 4 = 5 + 20 = 25.',
   svg: `<svg viewBox="0 0 540 310" width="500" xmlns="http://www.w3.org/2000/svg" fill="none" stroke-linecap="round" stroke-linejoin="round">
     <defs>
@@ -232,7 +238,7 @@ function renderTries(){
   let dots = '';
   for(let i=1;i<=max;i++) dots += `<span class="dot ${i<=u?'used':''}"></span>`;
   const ptsNext = u===0 ? '100 pts' : u===1 ? '70 pts' : u===2 ? '50 pts' : '0 pts';
-  $('#tries_ui').innerHTML = `${dots} <span>Envíos realizados: <b>${u} de ${max}</b> ${u<max ? `(Siguiente vale <b>${ptsNext}</b>)` : '(Sin más envíos)'}</span>`;
+  $('#tries_ui').innerHTML = `${dots} <span>Envíos realizados: <b>${u} de ${max}</b> ${u<max ? `(Acierto: <b>${ptsNext}</b> · Participar: <b>10 pts</b>)` : '(Sin más envíos)'}</span>`;
   if(u >= max){
     $('#btn_send').disabled = true;
     $('#btn_send').textContent = '🔒 Has agotado tus 3 envíos de esta semana';
@@ -256,12 +262,13 @@ function sendAns(){
   const cleanAns = rawAns.toLowerCase().replace(/\s+/g,'');
   const isOk = RETO_ACTUAL.solucion.includes(cleanAns);
   const pts = state.tries===1 ? 100 : state.tries===2 ? 70 : 50;
-  const autoTag = isOk ? `✅ ACERTADO (${pts} pts)` : `❌ FALLO (puso: ${rawAns})`;
+  const autoTag = isOk ? `✅ ACERTADO (${pts} pts)` : `❌ FALLO (+10 pts participación | puso: ${rawAns})`;
+  const grpLabel = grp === 'INVITADOS' ? 'Invitados' : grp;
 
   // Envío silencioso a Google Forms
   const fd = new URLSearchParams();
   fd.append(FIELDS.semana, RETO_ACTUAL.id);
-  fd.append(FIELDS.grupo, grp);
+  fd.append(FIELDS.grupo, grpLabel);
   fd.append(FIELDS.alumno, name);
   fd.append(FIELDS.intento, `Intento ${state.tries}/3`);
   fd.append(FIELDS.resp, rawAns);
@@ -276,8 +283,8 @@ function sendAns(){
   const m = $('#send_msg');
   m.classList.remove('hide');
   m.innerHTML = `🛰️ <b>¡Envío #${state.tries} recibido en el laboratorio!</b><br>
-    Tu respuesta (<b>${rawAns}</b>) queda guardada en secreto para <b>${name} (${grp})</b>.<br>
-    <span style="font-size:.88rem;opacity:.9">${rem > 0 ? `Si detectas algún error, aún puedes hacer ${rem} envío(s) más.` : 'Has completado tus 3 intentos. ¡Atento al ranking cuando el profe publique los resultados!'}</span>`;
+    Tu respuesta (<b>${rawAns}</b>) queda guardada en secreto para <b>${name} (${grpLabel})</b>.<br>
+    <span style="font-size:.88rem;opacity:.9">${rem > 0 ? `Ya tienes asegurados tus puntos de participación. Si quieres mejorar tu resultado, aún te quedan ${rem} envío(s).` : 'Has completado tus 3 intentos. ¡Atento al ranking cuando el profe publique los resultados!'}</span>`;
 }
 
 /* ---- Navegación de pestañas ---- */
@@ -306,6 +313,16 @@ function parseCSV(text){
   });
 }
 
+function normGrp(g){
+  const s = (g || '').toUpperCase().replace(/\s+/g,'').replace(/\./g,'');
+  if(s.includes('INVITAD')) return 'INVITADOS';
+  return s;
+}
+
+function showGrp(g){
+  return g === 'INVITADOS' ? 'Invitados' : g;
+}
+
 async function loadRank(force){
   $('#rank_status').textContent = 'Actualizando clasificación desde la nube...';
   $('#rank_status').classList.remove('hide');
@@ -316,7 +333,7 @@ async function loadRank(force){
     const rows = parseCSV(txt).slice(1).filter(r => r[0] && r[0].trim() !== '');
     rankData = rows.map(r => ({
       alumno: r[0] || '',
-      grupo: (r[1] || '').toUpperCase().replace(/\s+/g,'').replace('.',''),
+      grupo: normGrp(r[1]),
       retos: parseInt(r[2]) || 0,
       puntos: parseInt(r[3]) || 0
     })).sort((a,b) => b.puntos - a.puntos || b.retos - a.retos);
@@ -329,10 +346,8 @@ async function loadRank(force){
 
 function filterRank(f){
   currentFilter = f;
-  ['ALL','5ºA','5ºB'].forEach(k=>{
-    const id = k==='ALL'?'#f_all':k==='5ºA'?'#f_5a':'#f_5b';
-    $(id).classList.toggle('act', f===k);
-  });
+  const map = { 'ALL':'#f_all', '5ºA':'#f_5a', '5ºB':'#f_5b', 'INVITADOS':'#f_inv' };
+  Object.keys(map).forEach(k => $(map[k]).classList.toggle('act', f===k));
   renderRank();
 }
 
@@ -350,14 +365,14 @@ function renderRank(){
   // Podio Top 3
   const pod = $('#podium_box');
   pod.classList.remove('hide');
-  const order = [list[1], list[0], list[2]]; // 2º, 1º, 3º visualmente
+  const order = [list[1], list[0], list[2]];
   const meta = [{cls:'p2',med:'🥈'}, {cls:'p1',med:'🥇'}, {cls:'p3',med:'🥉'}];
   pod.innerHTML = order.map((item, idx) => {
     if(!item) return `<div class="pod ${meta[idx].cls}" style="opacity:.35"><span class="med">${meta[idx].med}</span><b>—</b></div>`;
     return `<div class="pod ${meta[idx].cls}">
       <span class="med">${meta[idx].med}</span>
       <b>${item.alumno}</b>
-      <small>${item.grupo} · ${item.retos} reto(s)</small>
+      <small>${showGrp(item.grupo)} · ${item.retos} reto(s)</small>
       <div class="pts">${item.puntos} pts</div>
     </div>`;
   }).join('');
@@ -368,7 +383,7 @@ function renderRank(){
     <tr>
       <td><b>${i+1}º</b></td>
       <td><b>${item.alumno}</b></td>
-      <td><span class="badge">${item.grupo}</span></td>
+      <td><span class="badge ${item.grupo==='INVITADOS'?'inv':''}">${showGrp(item.grupo)}</span></td>
       <td>${item.retos}</td>
       <td style="color:#fbbf24;font-weight:800">${item.puntos} pts</td>
     </tr>`).join('');
