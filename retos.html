@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Liga de Enigmas Matemáticos · 5º</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Lexend,"Trebuchet MS",system-ui,sans-serif;color:#f5f0ff;background:radial-gradient(ellipse at top,#1e3a8a,#0f172a 70%) fixed;overflow-x:hidden}
+body.dys{letter-spacing:.05em;word-spacing:.15em;line-height:1.8;font-size:1.05rem}
+.stars{position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(1.5px 1.5px at 90px 80px,#93c5fd,transparent),radial-gradient(2px 2px at 160px 140px,#fff,transparent);background-size:200px 200px;animation:tw 3s infinite alternate}
+@keyframes tw{from{opacity:.3}to{opacity:1}}
+.wrap{position:relative;max-width:860px;margin:0 auto;padding:14px}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+h1{margin:0;font-size:1.3rem}h1 small{display:block;font-size:.72rem;font-weight:400;opacity:.75}
+.logo{display:inline-block;animation:fl 3s ease-in-out infinite;font-size:1.8rem}
+@keyframes fl{50%{transform:translateY(-6px) rotate(-8deg)}}
+.pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:7px 14px;font-weight:700;color:#fff;font:inherit;cursor:pointer;transition:.15s}
+.pill:hover{background:rgba(255,255,255,.22)}
+.pill.act{background:#fbbf24;color:#1e1b4b;border-color:#fbbf24}
+.card{background:rgba(255,255,255,.08);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:22px;margin-bottom:16px;animation:pop .35s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.96);opacity:0}}
+.hide{display:none!important}
+.tag{display:inline-block;background:#fbbf24;color:#1e1b4b;font-size:.72rem;font-weight:800;padding:4px 10px;border-radius:9px;text-transform:uppercase;letter-spacing:.03em}
+.rules{background:linear-gradient(135deg,rgba(251,191,36,.16),rgba(56,189,248,.12));border:1px solid rgba(251,191,36,.45);border-radius:16px;padding:14px 16px;margin-bottom:18px;font-size:.92rem}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:8px}
+.r-box{background:rgba(15,23,42,.55);border-radius:10px;padding:8px 10px;text-align:center;border:1px solid rgba(255,255,255,.12)}
+.r-box b{color:#fbbf24;display:block;font-size:1.05rem}
+.art-box{background:rgba(15,23,42,.65);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:14px;margin:14px 0;text-align:center}
+.art-box svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.form-grid{display:grid;grid-template-columns:130px 1fr 1fr;gap:10px;margin-top:12px}
+.inp{width:100%;padding:13px 14px;font:inherit;font-size:1rem;border-radius:14px;border:2px solid rgba(251,191,36,.6);background:rgba(15,23,42,.7);color:#fff}
+.inp:focus{outline:none;border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.25)}
+.btn{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1e1b4b;border:0;border-radius:14px;padding:13px 22px;font:inherit;font-weight:800;cursor:pointer;transition:.15s;width:100%;margin-top:10px;font-size:1.05rem}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 20px rgba(245,158,11,.35)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.tries{display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;font-size:.88rem}
+.dot{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4)}
+.dot.used{background:#fbbf24;border-color:#fbbf24;box-shadow:0 0 8px #fbbf24}
+.msg{margin-top:14px;padding:14px;border-radius:14px;border:2px solid #38bdf8;background:rgba(56,189,248,.16);font-weight:600;text-align:center}
+.podium{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:10px;align-items:end;margin:18px 0 20px}
+.pod{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:12px 8px;text-align:center}
+.pod.p1{border:2px solid #fbbf24;background:linear-gradient(180deg,rgba(251,191,36,.25),rgba(251,191,36,.05));padding-bottom:22px}
+.pod.p2{border-color:#cbd5e1;padding-bottom:16px}
+.pod.p3{border-color:#d97706}
+.pod .med{font-size:2rem;display:block}
+.pod b{display:block;font-size:1rem;margin:4px 0 2px;word-break:break-word}
+.pod small{opacity:.8;font-size:.78rem;display:block}
+.pod .pts{color:#fbbf24;font-weight:800;font-size:1.05rem;margin-top:4px}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1)}
+th{font-size:.78rem;text-transform:uppercase;opacity:.7;letter-spacing:.04em}
+tr:hover td{background:rgba(255,255,255,.04)}
+.badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.75rem;font-weight:700;background:rgba(56,189,248,.22);color:#7dd3fc}
+.arch-item{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:16px;margin-bottom:12px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}.podium{gap:6px}.pod b{font-size:.88rem}}
+</style></head>
+<body><div class="stars"></div>
+<div class="wrap">
+<header>
+  <div style="display:flex;gap:10px;align-items:center">
+    <span class="logo">🏆</span>
+    <h1>Liga de Enigmas Matemáticos<small>Reto Semanal · 5º A y 5º B · Modo Misterio</small></h1>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="pill" onclick="document.body.classList.toggle('dys')">👁️ Lectura fácil</button>
+    <a href="index.html" class="pill" style="text-decoration:none">⌂ Inicio</a>
+  </div>
+</header>
+
+<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+  <button class="pill act" id="tab_reto" onclick="tab('reto')">🚀 Reto de esta semana</button>
+  <button class="pill" id="tab_rank" onclick="tab('rank')">🏅 Clasificación y Podio</button>
+  <button class="pill" id="tab_arch" onclick="tab('arch')">📚 Retos anteriores</button>
+</div>
+
+<!-- SECCIÓN 1: RETO SEMANAL -->
+<section id="sec_reto" class="card">
+  <div class="rules">
+    <div>🎯 <b>Reglas de puntuación y Modo Misterio:</b></div>
+    <div style="opacity:.9;margin-top:3px">No sabrás si has acertado hasta que se actualice el ranking. ¡Piensa bien antes de enviar!</div>
+    <div class="rules-grid">
+      <div class="r-box"><span>1.º intento</span><b>100 pts</b></div>
+      <div class="r-box"><span>2.º intento</span><b>70 pts</b></div>
+      <div class="r-box"><span>3.º intento</span><b>50 pts</b></div>
+    </div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+    <span class="tag" id="r_tag"></span>
+    <span style="font-size:.82rem;opacity:.8" id="r_date"></span>
+  </div>
+  <h2 style="margin:10px 0 6px" id="r_title"></h2>
+  <p style="margin:0 0 10px;opacity:.92" id="r_desc"></p>
+
+  <div class="art-box" id="r_art"></div>
+
+  <div style="margin:10px 0">
+    <button class="pill" style="font-size:.85rem" onclick="$('#r_hint').classList.toggle('hide')">💡 Ver pista del observatorio</button>
+    <div id="r_hint" class="hide" style="margin-top:8px;padding:10px 14px;background:rgba(251,191,36,.18);border-radius:12px;font-size:.92rem"></div>
+  </div>
+
+  <div style="background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:16px;margin-top:14px">
+    <div class="tries" id="tries_ui"></div>
+    <div class="form-grid">
+      <select id="in_grp" class="inp" aria-label="Clase">
+        <option value="5ºA">5.º A</option>
+        <option value="5ºB">5.º B</option>
+      </select>
+      <input id="in_name" class="inp" placeholder="Tu nombre e inicial (ej. Hugo G.)" maxlength="25">
+      <input id="in_ans" class="inp" placeholder="Tu resultado..." autocomplete="off">
+    </div>
+    <button class="btn" id="btn_send" onclick="sendAns()">🔒 Enviar respuesta secreta</button>
+    <div id="send_msg" class="msg hide"></div>
+  </div>
+</section>
+
+<!-- SECCIÓN 2: RANKING -->
+<section id="sec_rank" class="card hide">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+    <div>
+      <span class="tag">Clasificación oficial</span>
+      <h2 style="margin:6px 0 0">Podio de Genios Matemáticos</h2>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="pill act" id="f_all" onclick="filterRank('ALL')">Todos</button>
+      <button class="pill" id="f_5a" onclick="filterRank('5ºA')">5.º A</button>
+      <button class="pill" id="f_5b" onclick="filterRank('5ºB')">5.º B</button>
+      <button class="pill" onclick="loadRank(true)" title="Actualizar">🔄</button>
+    </div>
+  </div>
+
+  <div id="rank_status" style="margin:14px 0;opacity:.8;font-size:.9rem">Cargando clasificación desde el observatorio...</div>
+  <div id="podium_box" class="podium hide"></div>
+  <div style="overflow-x:auto">
+    <table id="rank_tbl" class="hide">
+      <thead><tr><th>#</th><th>Alumno/a</th><th>Clase</th><th>Retos</th><th>Puntos</th></tr></thead>
+      <tbody id="rank_body"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECCIÓN 3: ARCHIVO DE RETOS ANTERIORES -->
+<section id="sec_arch" class="card hide">
+  <span class="tag">Hemeroteca</span>
+  <h2 style="margin:8px 0 12px">Retos de semanas anteriores</h2>
+  <div id="arch_list"></div>
+</section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+
+/* =====================================================================
+   CONEXIÓN CON GOOGLE FORMS Y GOOGLE SHEETS (NO TOCAR)
+   ===================================================================== */
+const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSeatavGKhIX7Hdf8g_GtjltR2C2xAI0ZZMQj2bgJeWxlDJV_Q/formResponse';
+const FIELDS = {
+  semana: 'entry.1478797232',
+  grupo:  'entry.266410211',
+  alumno: 'entry.1984356261',
+  intento:'entry.373526519',
+  resp:   'entry.1344692818',
+  auto:   'entry.1843819689'
+};
+const RANK_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSllBjozns__YIm-GabiuxeWGazVlEoZcOepFHBr8eAID-FNsWHs0FzAtxV7cv9PmqFDffls-nQyMP9/pub?gid=1450173734&single=true&output=csv';
+
+/* =====================================================================
+   ZONA DE RETOS SEMANALES (AQUÍ PEGAREMOS CADA NUEVO RETO)
+   ===================================================================== */
+const RETO_ACTUAL = {
+  id: 'SEMANA-01',
+  tag: 'Reto #1 · Ojo de Águila',
+  fecha: 'Semana 1',
+  titulo: 'El Misterio de los Objetos Tecnológicos',
+  enunciado: 'Observa con lupa cada fila, descubre cuánto vale cada objeto y calcula el resultado final. ¡Fíjate muy bien en todos los detalles y en el orden de las operaciones!',
+  pista: 'Cuenta cuántos auriculares hay en la última fila y fíjate en el signo de multiplicar (×) antes de sumar.',
+  solucion: ['25'], // Respuestas válidas en minúsculas y sin espacios
+  explicacion: 'Par de auriculares = 10 (1 auricular = 5) · Muñeco = 5 · Reloj = 4. En la última fila: 5 + 5 × 4 = 5 + 20 = 25.',
+  svg: `<svg viewBox="0 0 540 310" width="500" xmlns="http://www.w3.org/2000/svg" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <defs>
+      <g id="earL"><path d="M12 10 C4 10 2 18 6 24 L9 24 L9 44 C9 46 13 46 13 44 L13 24 C17 22 18 10 12 10 Z" fill="#38bdf8" stroke="#e0f2fe" stroke-width="2"/><circle cx="11" cy="16" r="2" fill="#0f172a"/></g>
+      <g id="earR"><path d="M24 10 C32 10 34 18 30 24 L27 24 L27 44 C27 46 23 46 23 44 L23 24 C19 22 18 10 24 10 Z" fill="#38bdf8" stroke="#e0f2fe" stroke-width="2"/><circle cx="25" cy="16" r="2" fill="#0f172a"/></g>
+      <g id="pair"><use href="#earL"/><use href="#earR"/></g>
+      <g id="kid"><circle cx="18" cy="11" r="6" fill="#a78bfa" stroke="#ede9fe" stroke-width="2"/><path d="M9 22 C9 18 27 18 27 22 L28 34 L23 34 L22 46 L19 46 L18 35 L17 46 L14 46 L13 34 L8 34 Z" fill="#a78bfa" stroke="#ede9fe" stroke-width="2"/></g>
+      <g id="watch"><rect x="12" y="6" width="12" height="8" rx="2" fill="#fbbf24"/><rect x="12" y="38" width="12" height="8" rx="2" fill="#fbbf24"/><circle cx="18" cy="26" r="13" fill="#1e293b" stroke="#fbbf24" stroke-width="2.5"/><path d="M14 25 L18 28 L23 22" stroke="#38bdf8" stroke-width="2.2"/></g>
+    </defs>
+    <!-- Fila 1 -->
+    <use href="#pair" x="55" y="12"/><text x="115" y="45" fill="#fff" font-size="24" font-weight="bold">+</text>
+    <use href="#pair" x="155" y="12"/><text x="215" y="45" fill="#fff" font-size="24" font-weight="bold">+</text>
+    <use href="#pair" x="255" y="12"/><text x="320" y="45" fill="#fbbf24" font-size="26" font-weight="bold">= 30</text>
+    <!-- Fila 2 -->
+    <use href="#kid" x="55" y="85"/><text x="115" y="118" fill="#fff" font-size="24" font-weight="bold">+</text>
+    <use href="#kid" x="155" y="85"/><text x="215" y="118" fill="#fff" font-size="24" font-weight="bold">+</text>
+    <use href="#pair" x="255" y="85"/><text x="320" y="118" fill="#fbbf24" font-size="26" font-weight="bold">= 20</text>
+    <!-- Fila 3 -->
+    <use href="#watch" x="55" y="158"/><text x="115" y="191" fill="#fff" font-size="24" font-weight="bold">+</text>
+    <use href="#watch" x="155" y="158"/><text x="215" y="191" fill="#fff" font-size="24" font-weight="bold">+</text>
+    <use href="#kid" x="255" y="158"/><text x="320" y="191" fill="#fbbf24" font-size="26" font-weight="bold">= 13</text>
+    <!-- Línea divisoria -->
+    <line x1="40" y1="224" x2="430" y2="224" stroke="rgba(255,255,255,0.2)" stroke-dasharray="6 6"/>
+    <!-- Fila 4 -->
+    <use href="#earL" x="62" y="238"/><text x="115" y="271" fill="#fff" font-size="24" font-weight="bold">+</text>
+    <use href="#kid" x="155" y="238"/><text x="215" y="271" fill="#38bdf8" font-size="24" font-weight="bold">×</text>
+    <use href="#watch" x="255" y="238"/><text x="320" y="273" fill="#fbbf24" font-size="28" font-weight="bold">= ?</text>
+  </svg>`
+};
+
+const RETOS_ANTERIORES = [
+  // Aquí iremos moviendo los retos cuando pasen las semanas
+];
+
+/* =====================================================================
+   LÓGICA DE LA APLICACIÓN
+   ===================================================================== */
+const KEY = 'liga_math_' + RETO_ACTUAL.id;
+let state = { tries: 0, lastName: '', lastGrp: '5ºA' };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e){}
+const saveState = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} };
+
+function initReto(){
+  $('#r_tag').textContent = RETO_ACTUAL.tag;
+  $('#r_date').textContent = RETO_ACTUAL.fecha;
+  $('#r_title').textContent = RETO_ACTUAL.titulo;
+  $('#r_desc').textContent = RETO_ACTUAL.enunciado;
+  $('#r_art').innerHTML = RETO_ACTUAL.svg;
+  $('#r_hint').innerHTML = '🎩 <b>Pista:</b> ' + RETO_ACTUAL.pista;
+  if(state.lastName) $('#in_name').value = state.lastName;
+  if(state.lastGrp) $('#in_grp').value = state.lastGrp;
+  renderTries();
+}
+
+function renderTries(){
+  const max = 3, u = state.tries;
+  let dots = '';
+  for(let i=1;i<=max;i++) dots += `<span class="dot ${i<=u?'used':''}"></span>`;
+  const ptsNext = u===0 ? '100 pts' : u===1 ? '70 pts' : u===2 ? '50 pts' : '0 pts';
+  $('#tries_ui').innerHTML = `${dots} <span>Envíos realizados: <b>${u} de ${max}</b> ${u<max ? `(Siguiente vale <b>${ptsNext}</b>)` : '(Sin más envíos)'}</span>`;
+  if(u >= max){
+    $('#btn_send').disabled = true;
+    $('#btn_send').textContent = '🔒 Has agotado tus 3 envíos de esta semana';
+    $('#in_ans').disabled = true;
+  }
+}
+
+function sendAns(){
+  if(state.tries >= 3) return;
+  const grp = $('#in_grp').value;
+  const name = $('#in_name').value.trim();
+  const rawAns = $('#in_ans').value.trim();
+  if(name.length < 3){ alert('Por favor, escribe tu nombre y la inicial de tu apellido (ej. Marta R.)'); $('#in_name').focus(); return; }
+  if(!rawAns){ alert('Escribe tu resultado antes de enviar.'); $('#in_ans').focus(); return; }
+
+  state.tries++;
+  state.lastName = name;
+  state.lastGrp = grp;
+  saveState();
+
+  const cleanAns = rawAns.toLowerCase().replace(/\s+/g,'');
+  const isOk = RETO_ACTUAL.solucion.includes(cleanAns);
+  const pts = state.tries===1 ? 100 : state.tries===2 ? 70 : 50;
+  const autoTag = isOk ? `✅ ACERTADO (${pts} pts)` : `❌ FALLO (puso: ${rawAns})`;
+
+  // Envío silencioso a Google Forms
+  const fd = new URLSearchParams();
+  fd.append(FIELDS.semana, RETO_ACTUAL.id);
+  fd.append(FIELDS.grupo, grp);
+  fd.append(FIELDS.alumno, name);
+  fd.append(FIELDS.intento, `Intento ${state.tries}/3`);
+  fd.append(FIELDS.resp, rawAns);
+  fd.append(FIELDS.auto, autoTag);
+
+  fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: fd }).catch(()=>{});
+
+  $('#in_ans').value = '';
+  renderTries();
+
+  const rem = 3 - state.tries;
+  const m = $('#send_msg');
+  m.classList.remove('hide');
+  m.innerHTML = `🛰️ <b>¡Envío #${state.tries} recibido en el laboratorio!</b><br>
+    Tu respuesta (<b>${rawAns}</b>) queda guardada en secreto para <b>${name} (${grp})</b>.<br>
+    <span style="font-size:.88rem;opacity:.9">${rem > 0 ? `Si detectas algún error, aún puedes hacer ${rem} envío(s) más.` : 'Has completado tus 3 intentos. ¡Atento al ranking cuando el profe publique los resultados!'}</span>`;
+}
+
+/* ---- Navegación de pestañas ---- */
+function tab(t){
+  ['reto','rank','arch'].forEach(x=>{
+    $('#sec_'+x).classList.toggle('hide', x!==t);
+    $('#tab_'+x).classList.toggle('act', x===t);
+  });
+  if(t==='rank' && !rankLoaded) loadRank(false);
+}
+
+/* ---- Carga y filtrado del Ranking desde Google Sheets CSV ---- */
+let rankData = [], rankLoaded = false, currentFilter = 'ALL';
+
+function parseCSV(text){
+  return text.trim().split(/\r?\n/).map(row => {
+    const out = []; let cur = '', inQ = false;
+    for(let i=0;i<row.length;i++){
+      const c = row[i];
+      if(c==='"'){ inQ = !inQ; }
+      else if(c===',' && !inQ){ out.push(cur.trim()); cur=''; }
+      else cur += c;
+    }
+    out.push(cur.trim());
+    return out;
+  });
+}
+
+async function loadRank(force){
+  $('#rank_status').textContent = 'Actualizando clasificación desde la nube...';
+  $('#rank_status').classList.remove('hide');
+  try{
+    const url = RANK_CSV + '&t=' + Date.now();
+    const res = await fetch(url);
+    const txt = await res.text();
+    const rows = parseCSV(txt).slice(1).filter(r => r[0] && r[0].trim() !== '');
+    rankData = rows.map(r => ({
+      alumno: r[0] || '',
+      grupo: (r[1] || '').toUpperCase().replace(/\s+/g,'').replace('.',''),
+      retos: parseInt(r[2]) || 0,
+      puntos: parseInt(r[3]) || 0
+    })).sort((a,b) => b.puntos - a.puntos || b.retos - a.retos);
+    rankLoaded = true;
+    renderRank();
+  }catch(e){
+    $('#rank_status').textContent = 'Aún no hay datos publicados o no se pudo conectar con la hoja de cálculo.';
+  }
+}
+
+function filterRank(f){
+  currentFilter = f;
+  ['ALL','5ºA','5ºB'].forEach(k=>{
+    const id = k==='ALL'?'#f_all':k==='5ºA'?'#f_5a':'#f_5b';
+    $(id).classList.toggle('act', f===k);
+  });
+  renderRank();
+}
+
+function renderRank(){
+  const list = rankData.filter(x => currentFilter==='ALL' || x.grupo===currentFilter);
+  if(!list.length){
+    $('#rank_status').textContent = 'Todavía no hay puntuaciones publicadas para esta selección. ¡Participa en el reto de esta semana!';
+    $('#rank_status').classList.remove('hide');
+    $('#podium_box').classList.add('hide');
+    $('#rank_tbl').classList.add('hide');
+    return;
+  }
+  $('#rank_status').classList.add('hide');
+
+  // Podio Top 3
+  const pod = $('#podium_box');
+  pod.classList.remove('hide');
+  const order = [list[1], list[0], list[2]]; // 2º, 1º, 3º visualmente
+  const meta = [{cls:'p2',med:'🥈'}, {cls:'p1',med:'🥇'}, {cls:'p3',med:'🥉'}];
+  pod.innerHTML = order.map((item, idx) => {
+    if(!item) return `<div class="pod ${meta[idx].cls}" style="opacity:.35"><span class="med">${meta[idx].med}</span><b>—</b></div>`;
+    return `<div class="pod ${meta[idx].cls}">
+      <span class="med">${meta[idx].med}</span>
+      <b>${item.alumno}</b>
+      <small>${item.grupo} · ${item.retos} reto(s)</small>
+      <div class="pts">${item.puntos} pts</div>
+    </div>`;
+  }).join('');
+
+  // Tabla completa
+  $('#rank_tbl').classList.remove('hide');
+  $('#rank_body').innerHTML = list.map((item, i) => `
+    <tr>
+      <td><b>${i+1}º</b></td>
+      <td><b>${item.alumno}</b></td>
+      <td><span class="badge">${item.grupo}</span></td>
+      <td>${item.retos}</td>
+      <td style="color:#fbbf24;font-weight:800">${item.puntos} pts</td>
+    </tr>`).join('');
+}
+
+function initArch(){
+  if(!RETOS_ANTERIORES.length){
+    $('#arch_list').innerHTML = '<p style="opacity:.8">Esta es la primera semana de la Liga. ¡Cuando termine, aquí aparecerá el reto con su solución explicada!</p>';
+    return;
+  }
+  $('#arch_list').innerHTML = RETOS_ANTERIORES.map(r => `
+    <div class="arch-item">
+      <span class="tag">${r.tag}</span>
+      <h3 style="margin:8px 0 4px">${r.titulo}</h3>
+      <p style="margin:0 0 8px;opacity:.9">${r.enunciado}</p>
+      <div style="background:rgba(16,185,129,.2);border:1px solid #10b981;padding:10px;border-radius:10px;font-size:.9rem">
+        ✅ <b>Solución:</b> ${r.explicacion}
+      </div>
+    </div>`).join('');
+}
+
+initReto();
+initArch();
+</script></body></html>
