@@ -671,4 +671,212 @@ function done(ok, partial){
     if(ok) hits++;
     examLog.push({ q: q.q, ok: !!ok, e: q.e });
     $('#nx').disabled=false;
-    $('#nx').text
+    $('#nx').textContent = qi===qs.length-1 ? 'Entregar Examen 🎓' : 'Siguiente pregunta ➜';
+    const f=$('#fb'); f.classList.remove('hide');
+    f.style.cssText='background:rgba(56,189,248,.18);border-color:#38bdf8';
+    $('#ft').textContent='🔒 Respuesta registrada en el examen.';
+    $('#fx').textContent='Pulsa el botón para continuar.';
+    return;
+  }
+
+  const L=LEVELS[lv];
+  let pts=0;
+  if(ok||partial){pts=ok?L.p:Math.ceil(L.p/2);if(hinted)pts=Math.ceil(pts/2)}
+  if(ok){streak++;hits++;if(streak>=3)pts+=5;burst()}else streak=0;
+  total+=pts; lvs+=pts;
+  $('#sc').textContent=total; $('#st').textContent=streak;
+  const f=$('#fb'); f.classList.remove('hide');
+  f.style.cssText=ok?'background:rgba(16,185,129,.25);border-color:#10b981':'background:rgba(251,191,36,.2);border-color:#fbbf24';
+  $('#ft').textContent=ok?sh(['✅ ¡Cálculo exacto!','✨ ¡Dominas los repartos!','🧭 ¡Diez puntos para tu equipo!'])[0]+(pts?` +${pts} pts`:''):'💡 Revisa el procedimiento con atención';
+  $('#fx').innerHTML=q.e;
+  $('#nx').disabled=false;
+  $('#nx').textContent=qi===qs.length-1?'Ver resultado ➜':'Siguiente ➜';
+}
+
+function next(){
+  if(++qi<qs.length) draw();
+  else if(mode==='exam') finishExam(false);
+  else finish();
+}
+
+function finish(){
+  const n=qs.length, r=hits/n, st=r>=.8?3:r>=.6?2:1;
+  S[lv]=Math.max(S[lv]||0,st); save();
+  show('end');
+  $('#e_ic').textContent='🏆';
+  $('#et').textContent=r===1?'¡Maestría Total del Nivel!':'¡Nivel completado!';
+  $('#es').textContent='⭐'.repeat(st)+'☆'.repeat(3-st);
+  $('#ep').textContent=`${hits} de ${n} aciertos · ${lvs} puntos en este nivel`;
+  $('#ex_sent_box').classList.add('hide');
+  $('#ex_review').innerHTML='';
+  $('#btn_retry').classList.remove('hide');
+  if(st===3){burst();setTimeout(burst,500)}
+}
+
+function finishExam(timeOut){
+  clearInterval(examTimer);
+  const totalQ = qs.length;
+  const grade = ((hits / totalQ) * 10).toFixed(1);
+  const usedSec = 720 - Math.max(0, examSec);
+  const um = String(Math.floor(usedSec/60)).padStart(2,'0');
+  const us = String(usedSec%60).padStart(2,'0');
+  const timeStr = `${um}m ${us}s`;
+
+  try { localStorage.setItem(examUser.exKey, grade); } catch(e){}
+
+  const fd = new URLSearchParams();
+  fd.append(FIELDS.semana, 'EXAMEN-T3');
+  fd.append(FIELDS.grupo, examUser.grp);
+  fd.append(FIELDS.alumno, examUser.name);
+  fd.append(FIELDS.intento, 'Examen Tema 3');
+  fd.append(FIELDS.resp, `${hits}/${totalQ} (${timeStr})`);
+  fd.append(FIELDS.auto, `NOTA: ${grade} / 10${timeOut?' (Tiempo agotado)':''}`);
+  fetch(FORM_URL, { method:'POST', mode:'no-cors', body:fd }).catch(()=>{});
+
+  show('end');
+  $('#e_ic').textContent='🎓';
+  $('#et').textContent= timeOut ? '¡Tiempo agotado! Examen entregado' : '¡Examen Oficial Entregado!';
+  $('#es').textContent=`Nota: ${grade} / 10`;
+  $('#ep').textContent=`${hits} de ${totalQ} aciertos · Tiempo empleado: ${timeStr}`;
+  $('#btn_retry').classList.add('hide');
+
+  const sb = $('#ex_sent_box');
+  sb.classList.remove('hide');
+  sb.innerHTML = `🛰️ <b>Resultado enviado automáticamente al profesor</b><br>Participante: <b>${examUser.name} (${examUser.grp})</b> · Calificación: <b>${grade} / 10</b>`;
+
+  $('#ex_review').innerHTML = '<h4 style="margin:12px 0 6px">Resumen de tus respuestas:</h4>' + examLog.map((item, idx)=>`
+    <div class="rev-item" style="background:${item.ok?'rgba(16,185,129,.15)':'rgba(239,68,68,.15)'};border-color:${item.ok?'#10b981':'#ef4444'}">
+      <b>${idx+1}. ${item.ok?'✅ Correcta':'❌ Fallada'}</b> — <span style="opacity:.9">${item.q}</span>
+      ${!item.ok ? `<div style="margin-top:4px;font-size:.84rem;color:#fde68a">💡 ${item.e}</div>` : ''}
+    </div>`).join('');
+
+  if(parseFloat(grade) >= 8){ burst(); setTimeout(burst, 500); }
+}
+
+function burst(){for(let i=0;i<26;i++){const s=el('span','sp');s.textContent=['✨','⭐','🧭','➗'][i%4];s.style.cssText=`left:${40+Math.random()*20}%;top:45%;--x:${(Math.random()-.5)*700}px;--y:${-Math.random()*400}px`;document.body.appendChild(s);setTimeout(()=>s.remove(),1200)}}
+
+/* =====================================================================
+   RENDERIZADO DE LAS MECÁNICAS INTERACTIVAS
+   ===================================================================== */
+const R={
+  mc(A,q){
+    sh(q.o.map((x,i)=>[x,i])).forEach(([x,i])=>{
+      const b=el('button','opt'); b.innerHTML=x; b.dataset.c=i?'':1;
+      b.onclick=()=>{
+        if(locked)return;
+        if(mode==='practice') A.querySelector('[data-c="1"]').classList.add('ok');
+        else b.classList.add('sel');
+        if(i && mode==='practice') b.classList.add('bad');
+        done(!i);
+      };
+      A.appendChild(b);
+    });
+  },
+  vf(A,q){
+    [['✅ VERDADERO',1],['❌ FALSO',0]].forEach(([x,v])=>{
+      const b=el('button','opt'); b.textContent=x;
+      b.onclick=()=>{
+        if(locked)return;
+        const ok=!!q.a==!!v;
+        if(mode==='practice') b.classList.add(ok?'ok':'bad');
+        else b.classList.add('sel');
+        done(ok);
+      };
+      A.appendChild(b);
+    });
+  },
+  fill(A,q){
+    A.innerHTML='<input id="in" class="inp" placeholder="Escribe tu respuesta…" autocomplete="off"><button class="btn" id="ck">Comprobar</button>';
+    const go=()=>{
+      if(locked)return;
+      const v=$('#in').value.toLowerCase().replace(/[.\s]/g,'');
+      if(!v)return;
+      const ok=q.a.map(x=>x.toLowerCase().replace(/[.\s]/g,'')).includes(v);
+      if(mode==='practice') $('#in').classList.add(ok?'ok':'bad');
+      done(ok);
+    };
+    $('#ck').onclick=go;
+    $('#in').onkeydown=e=>{if(e.key==='Enter')go()};
+    $('#in').focus();
+  },
+  mfill(A,q){
+    let html = q.tpl;
+    q.a.forEach((_, i)=>{
+      html = html.replace(`{${i}}`, `<input class="minp" id="mf_${i}" autocomplete="off">`);
+    });
+    A.innerHTML = `<div class="mfill-box">${html}</div><button class="btn" id="ck">Comprobar fórmula</button>`;
+    const go=()=>{
+      if(locked)return;
+      let allFilled = true, allOk = true;
+      q.a.forEach((ans, i)=>{
+        const inp = $('#mf_'+i);
+        const val = inp.value.trim().toUpperCase().replace(/[.\s]/g,'').replace('Í','I');
+        if(!val) allFilled = false;
+        const expected = ans.toUpperCase().replace(/[.\s]/g,'').replace('Í','I');
+        const ok = val === expected;
+        if(!ok) allOk = false;
+        if(mode==='practice' && val) inp.style.borderColor = ok ? '#10b981' : '#ef4444';
+      });
+      if(!allFilled) return;
+      done(allOk);
+    };
+    $('#ck').onclick=go;
+    A.querySelectorAll('.minp').forEach(inp=>inp.onkeydown=e=>{if(e.key==='Enter')go()});
+    $('#mf_0').focus();
+  },
+  match(A,q){
+    let m=0,bad=0,s=null;
+    A.innerHTML='<div class="mt"><div id="ml"></div><div id="mr"></div></div>';
+    const mk=(box,arr,side)=>arr.forEach(([t,i])=>{
+      const b=el('button','opt'); b.innerHTML=t;
+      b.onclick=()=>{
+        if(locked||b.disabled)return;
+        if(!s||s.side===side){if(s)s.b.classList.remove('sel');s={b,i,side};b.classList.add('sel');return}
+        if(s.i===i){[s.b,b].forEach(x=>{x.disabled=true;x.classList.remove('sel');x.classList.add('ok')});s=null;if(++m===q.pairs.length)done(bad<2,true)}
+        else{bad++;const p=s.b;s=null;[p,b].forEach(x=>{x.classList.remove('sel');x.classList.add('shake','bad')});setTimeout(()=>[p,b].forEach(x=>x.classList.remove('shake','bad')),450)}
+      };
+      $(box).appendChild(b);
+    });
+    mk('#ml',sh(q.pairs.map((p,i)=>[p[0],i])),0);
+    mk('#mr',sh(q.pairs.map((p,i)=>[p[1],i])),1);
+  },
+  order(A,q){const n=q.items.length;board(A,q,q.items.map((_,i)=>i===0?'1.º Paso':i===n-1?n+'.º Paso':(i+1)+'.º Paso'),true,q.items.map((x,i)=>[x,i]))},
+  sort(A,q){board(A,q,q.zones,false,q.items)}
+};
+
+function board(A,q,zn,single,items){
+  A.innerHTML='<div class="zs" id="zs"></div><div class="pool" id="pool"></div><button class="btn" id="ck">Comprobar</button>';
+  const pool=$('#pool');
+  const put=(c,s)=>{if(!s)s=pool;if(!single&&s!=pool||single&&s!=pool){const o=single&&s.querySelector('.chip');if(o&&o!==c)pool.appendChild(o)}s.appendChild(c);if(sel)sel.classList.remove('sel');sel=null};
+  zn.forEach(z=>{const d=el('div','slot');d.innerHTML=`<small>${z}</small>`;d.onclick=()=>{if(sel&&!locked)put(sel,d)};$('#zs').appendChild(d)});
+  pool.onclick=()=>{if(sel&&!locked)put(sel,pool)};
+  sh(items).forEach(([t,k])=>{
+    const c=el('div','chip'); c.innerHTML=t; c.dataset.k=k; c.onclick=e=>e.stopPropagation();
+    c.onpointerdown=e=>{
+      if(locked)return;
+      const sx=e.clientX,sy=e.clientY; let g=null;
+      const mv=ev=>{if(!g&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>6){g=c.cloneNode(true);g.classList.add('ghost');document.body.appendChild(g);c.classList.add('dim')}if(g){g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px'}};
+      const up=ev=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);
+        if(g){g.remove();c.classList.remove('dim');const t=document.elementFromPoint(ev.clientX,ev.clientY);put(c,t&&t.closest('.slot,.pool'))}
+        else{if(sel===c){c.classList.remove('sel');sel=null}else{if(sel)sel.classList.remove('sel');sel=c;c.classList.add('sel')}}};
+      addEventListener('pointermove',mv); addEventListener('pointerup',up);
+    };
+    pool.appendChild(c);
+  });
+  $('#ck').onclick=()=>{
+    if(locked)return;
+    let ok=!pool.children.length;
+    [...$('#zs').children].forEach((z,i)=>{
+      if(single&&!z.querySelector('.chip'))ok=false;
+      z.querySelectorAll('.chip').forEach(c=>{
+        const g=c.dataset.k==i;
+        if(mode==='practice') c.classList.add(g?'ok':'bad');
+        if(!g)ok=false;
+      });
+    });
+    done(ok);
+  };
+}
+
+home();
+</script></body></html>
