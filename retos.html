@@ -25,6 +25,8 @@ h1{margin:0;font-size:1.3rem}h1 small{display:block;font-size:.72rem;font-weight
 .r-box b{color:#fbbf24;display:block;font-size:1.05rem}
 .r-box.part{border-color:rgba(56,189,248,.45)}
 .r-box.part b{color:#38bdf8}
+.bonus-bar{margin-top:10px;padding:9px 12px;border-radius:10px;background:rgba(16,185,129,.16);border:1px solid rgba(16,185,129,.45);font-size:.86rem;text-align:center;line-height:1.45}
+.bonus-bar b{color:#6ee7b7}
 .art-box{background:rgba(15,23,42,.65);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:14px;margin:14px 0;text-align:center}
 .art-box svg{max-width:100%;height:auto;display:block;margin:0 auto}
 .form-grid{display:grid;grid-template-columns:150px 1fr 1fr;gap:10px;margin-top:12px}
@@ -36,7 +38,9 @@ h1{margin:0;font-size:1.3rem}h1 small{display:block;font-size:.72rem;font-weight
 .tries{display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;font-size:.88rem;flex-wrap:wrap;text-align:center}
 .dot{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4)}
 .dot.used{background:#fbbf24;border-color:#fbbf24;box-shadow:0 0 8px #fbbf24}
-.msg{margin-top:14px;padding:14px;border-radius:14px;border:2px solid #38bdf8;background:rgba(56,189,248,.16);font-weight:600;text-align:center}
+.msg{margin-top:14px;padding:15px;border-radius:14px;border:2px solid #38bdf8;background:rgba(56,189,248,.16);font-weight:600;text-align:center;line-height:1.5}
+.warn-box{margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(251,191,36,.2);border:1px solid #fbbf24;color:#fef3c7;font-size:.88rem;font-weight:700}
+.sunday-box{text-align:center;padding:18px 14px;border-radius:16px;background:rgba(56,189,248,.14);border:2px dashed #38bdf8}
 .podium{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:10px;align-items:end;margin:18px 0 20px}
 .pod{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:12px 8px;text-align:center}
 .pod.p1{border:2px solid #fbbf24;background:linear-gradient(180deg,rgba(251,191,36,.25),rgba(251,191,36,.05));padding-bottom:22px}
@@ -95,13 +99,16 @@ tr:hover td{background:rgba(255,255,255,.04)}
 
   <div id="active_reto_box">
     <div class="rules">
-      <div>🎯 <b>Reglas de puntuación y Modo Misterio:</b></div>
+      <div>🎯 <b>Reglas de puntuación (plazo de lunes a sábado):</b></div>
       <div style="opacity:.9;margin-top:3px">No sabrás si has acertado hasta que se actualice el ranking. ¡Solo por participar ya ganas puntos!</div>
       <div class="rules-grid">
         <div class="r-box"><span>1.º intento</span><b>100 pts</b></div>
         <div class="r-box"><span>2.º intento</span><b>70 pts</b></div>
         <div class="r-box"><span>3.º intento</span><b>50 pts</b></div>
         <div class="r-box part"><span>Participar (fallo)</span><b>10 pts</b></div>
+      </div>
+      <div class="bonus-bar">
+        ⚡ <b>Puntos extra por acierto temprano:</b> Lunes <b>+5 pts</b> · Martes <b>+4 pts</b> · Miércoles <b>+3 pts</b> · Jueves <b>+2 pts</b> · Viernes <b>+1 pt</b> · Sábado +0 pts (Domingo: descanso).
       </div>
     </div>
 
@@ -119,7 +126,15 @@ tr:hover td{background:rgba(255,255,255,.04)}
       <div id="r_hint" class="hide" style="margin-top:8px;padding:10px 14px;background:rgba(251,191,36,.18);border-radius:12px;font-size:.92rem"></div>
     </div>
 
-    <div style="background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:16px;margin-top:14px">
+    <!-- AVISO DE DOMINGO (DÍA DE DESCANSO) -->
+    <div id="sunday_closed" class="sunday-box hide" style="margin-top:14px">
+      <div style="font-size:2.2rem;margin-bottom:6px">🛌✨</div>
+      <b style="font-size:1.08rem;color:#7dd3fc;display:block;margin-bottom:4px">Hoy es domingo · Día de descanso</b>
+      <span style="font-size:.92rem;opacity:.92">Los envíos para este reto están cerrados. Se responde exclusivamente de <b>lunes a sábado</b>.<br>¡Esta noche a las <b>21:00</b> se publicará el siguiente enigma para empezar el lunes!</span>
+    </div>
+
+    <!-- FORMULARIO DE ENVÍO (LUNES A SÁBADO) -->
+    <div id="send_panel" style="background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:16px;margin-top:14px">
       <div class="tries" id="tries_ui"></div>
       <div class="form-grid">
         <select id="in_grp" class="inp" aria-label="Grupo">
@@ -198,7 +213,7 @@ const TODOS_LOS_RETOS = [
     id: 'SEMANA-01',
     inicio: '2026-11-15T00:00:00',
     tag: 'Reto #1 · Ojo de Águila',
-    fecha: 'Semana 1 · Hasta dom. 22 nov (21:00)',
+    fecha: 'Semana 1 · Respuestas de lunes a sábado',
     titulo: 'El Misterio de los Objetos Tecnológicos',
     enunciado: 'Observa con lupa cada fila, descubre cuánto vale cada objeto y calcula el resultado final. ¡Fíjate muy bien en todos los detalles y en el orden de las operaciones!',
     pista: 'Cuenta cuántos auriculares hay en la última fila y fíjate en el signo de multiplicar (×) antes de sumar.',
@@ -231,7 +246,7 @@ const TODOS_LOS_RETOS = [
     id: 'SEMANA-02',
     inicio: '2026-11-22T21:00:00',
     tag: 'Reto #2 · Lógica Piramidal',
-    fecha: 'Semana 2 · Hasta dom. 29 nov (21:00)',
+    fecha: 'Semana 2 · Respuestas de lunes a sábado',
     titulo: 'El Secreto de los Triángulos Gemelos',
     enunciado: 'Observa qué operación conecta los dos números de arriba con el número de abajo en los dos primeros triángulos. Cuando descubras la regla secreta, aplícala al tercer triángulo para hallar el valor de la interrogación.',
     pista: 'Prueba a multiplicar los dos números de arriba entre sí… ¿por cuánto tienes que volver a multiplicar ese resultado para obtener el número de abajo?',
@@ -255,7 +270,7 @@ const TODOS_LOS_RETOS = [
     id: 'SEMANA-03',
     inicio: '2026-11-29T21:00:00',
     tag: 'Reto #3 · Equilibrio Cósmico',
-    fecha: 'Semana 3 · Hasta dom. 6 dic (21:00)',
+    fecha: 'Semana 3 · Respuestas de lunes a sábado',
     titulo: 'La Balanza de los Cristales Energéticos',
     enunciado: 'Observa las dos balanzas digitales en equilibrio. Sabiendo que todos los cristales del mismo color pesan exactamente lo mismo, ¿cuántos gramos pesa un solo cristal azul?',
     pista: 'Compara la primera balanza con la segunda: ¿qué hay de más en la segunda balanza y cuántos gramos ha subido el peso total?',
@@ -290,7 +305,7 @@ const TODOS_LOS_RETOS = [
     id: 'SEMANA-04',
     inicio: '2026-12-06T21:00:00',
     tag: 'Reto #4 · Criptografía Numérica',
-    fecha: 'Semana 4 · Hasta dom. 13 dic (21:00)',
+    fecha: 'Semana 4 · Respuestas de lunes a sábado',
     titulo: 'El Código de la Caja Fuerte Galáctica',
     enunciado: 'Para abrir la compuerta de la nave necesitas descubrir su código secreto de 3 cifras leyendo atentamente las 4 pistas del panel.',
     pista: 'Si es múltiplo de 5 y además es impar, ¿en qué única cifra puede terminar? Y si es mayor que 400 y menor que 500, ¿por qué cifra empieza?',
@@ -313,7 +328,7 @@ const TODOS_LOS_RETOS = [
     id: 'SEMANA-05',
     inicio: '2026-12-13T21:00:00',
     tag: 'Reto #5 · Patrones del Tiempo',
-    fecha: 'Semana 5 · Último reto hasta dom. 20 dic (21:00)',
+    fecha: 'Semana 5 · Último reto (respuestas de lunes a sábado)',
     titulo: 'La Carrera de los Relojes Sincronizados',
     enunciado: 'Estos relojes siguen un patrón temporal exacto de izquierda a derecha. Observa cuánto tiempo pasa entre un reloj y el siguiente y escribe la hora que debe marcar el 5.º reloj (ejemplo: 14:20).',
     pista: 'Fíjate en cuánto avanza el minutero del 1.º al 2.º reloj (de 12:00 a 12:25). ¡Cuidado al pasar de las 12:50 a las 13:15!',
@@ -329,15 +344,25 @@ const TODOS_LOS_RETOS = [
   }
 ];
 
-// Cálculo automático según fecha y hora actual
-const AHORA = Date.now();
+// Cálculo automático según fecha, hora y día de la semana
+const NOW_DATE = new Date();
+const AHORA = NOW_DATE.getTime();
+const ES_PRIMER_DOMINGO = NOW_DATE.getFullYear() === 2026 && NOW_DATE.getMonth() === 10 && NOW_DATE.getDate() === 22;
+const ES_DOMINGO = NOW_DATE.getDay() === 0 && !ES_PRIMER_DOMINGO;
 const TEMPORADA_CERRADA = AHORA >= new Date(CIERRE_TEMPORADA).getTime();
 const DISPONIBLES = TODOS_LOS_RETOS.filter(r => AHORA >= new Date(r.inicio).getTime());
 const RETO_ACTUAL = DISPONIBLES.length ? DISPONIBLES[DISPONIBLES.length - 1] : TODOS_LOS_RETOS[0];
 const RETOS_ANTERIORES = TEMPORADA_CERRADA ? [...DISPONIBLES].reverse() : DISPONIBLES.slice(0, -1).reverse();
 
+// Bonus según día de la semana: Lunes(1)=5, Martes(2)=4, Miércoles(3)=3, Jueves(4)=2, Viernes(5)=1, Sábado(6)=0
+function getDayBonus(){
+  const d = new Date().getDay();
+  const map = { 1: {pts:5, name:'Lunes'}, 2: {pts:4, name:'Martes'}, 3: {pts:3, name:'Miércoles'}, 4: {pts:2, name:'Jueves'}, 5: {pts:1, name:'Viernes'}, 6: {pts:0, name:'Sábado'} };
+  return map[d] || {pts:0, name:'Domingo'};
+}
+
 /* =====================================================================
-   LÓGICA DE LA APLICACIÓN (INTENTOS POR ALUMNO Y GRUPO)
+   LÓGICA DE LA APLICACIÓN (INTENTOS Y RESPUESTAS PREVIAS POR ALUMNO)
    ===================================================================== */
 const BASE_KEY = 'liga_math_' + RETO_ACTUAL.id;
 let metaState = { lastName: '', lastGrp: '5ºA' };
@@ -349,13 +374,18 @@ function getUserKey(){
   return `${BASE_KEY}_${grp}_${cleanName || 'anon'}`;
 }
 
-function getTries(){
-  try { return parseInt(localStorage.getItem(getUserKey()) || '0', 10); } catch(e){ return 0; }
+function getUserRecord(){
+  try {
+    const raw = localStorage.getItem(getUserKey());
+    if(!raw) return { tries: 0, sent: [] };
+    if(/^\d+$/.test(raw)) return { tries: parseInt(raw, 10), sent: [] };
+    return JSON.parse(raw);
+  } catch(e){ return { tries: 0, sent: [] }; }
 }
 
-function setTries(n){
+function saveUserRecord(rec){
   try {
-    localStorage.setItem(getUserKey(), String(n));
+    localStorage.setItem(getUserKey(), JSON.stringify(rec));
     localStorage.setItem(BASE_KEY + '_meta', JSON.stringify({ lastName: $('#in_name').value.trim(), lastGrp: $('#in_grp').value }));
   } catch(e){}
 }
@@ -372,6 +402,13 @@ function initReto(){
   $('#r_desc').textContent = RETO_ACTUAL.enunciado;
   $('#r_art').innerHTML = RETO_ACTUAL.svg;
   $('#r_hint').innerHTML = '🎩 <b>Pista:</b> ' + RETO_ACTUAL.pista;
+
+  if(ES_DOMINGO){
+    $('#send_panel').classList.add('hide');
+    $('#sunday_closed').classList.remove('hide');
+    return;
+  }
+
   if(metaState.lastName) $('#in_name').value = metaState.lastName;
   if(metaState.lastGrp) $('#in_grp').value = metaState.lastGrp;
   $('#in_name').addEventListener('input', renderTries);
@@ -380,11 +417,15 @@ function initReto(){
 }
 
 function renderTries(){
-  const max = 3, u = getTries();
+  const max = 3, rec = getUserRecord(), u = rec.tries;
+  const bonus = getDayBonus();
   let dots = '';
   for(let i=1;i<=max;i++) dots += `<span class="dot ${i<=u?'used':''}"></span>`;
-  const ptsNext = u===0 ? '100 pts' : u===1 ? '70 pts' : u===2 ? '50 pts' : '0 pts';
-  $('#tries_ui').innerHTML = `${dots} <span>Envíos realizados: <b>${u} de ${max}</b> ${u<max ? `(Acierto: <b>${ptsNext}</b> · Participar: <b>10 pts</b>)` : '(Sin más envíos)'}</span>`;
+  const baseNext = u===0 ? 100 : u===1 ? 70 : u===2 ? 50 : 0;
+  const bonusTxt = bonus.pts > 0 ? ` + <b>${bonus.pts} bonus ${bonus.name}</b>` : '';
+  const prevTxt = rec.sent.length ? `<div style="width:100%;font-size:.82rem;opacity:.82;margin-top:4px">Respuestas ya enviadas por este participante: <b>${rec.sent.join(', ')}</b> (no repitas la misma)</div>` : '';
+
+  $('#tries_ui').innerHTML = `${dots} <span>Envíos realizados: <b>${u} de ${max}</b> ${u<max ? `(Acierto hoy: <b>${baseNext} pts</b>${bonusTxt} · Participar: <b>10 pts</b>)` : '(Sin más envíos)'}</span>${prevTxt}`;
   if(u >= max){
     $('#btn_send').disabled = true;
     $('#btn_send').textContent = '🔒 Este participante ya ha agotado sus 3 envíos';
@@ -397,22 +438,36 @@ function renderTries(){
 }
 
 function sendAns(){
-  if(TEMPORADA_CERRADA) return;
-  const u = getTries();
-  if(u >= 3) return;
+  if(TEMPORADA_CERRADA || ES_DOMINGO) return;
+  const rec = getUserRecord();
+  if(rec.tries >= 3) return;
+
   const grp = $('#in_grp').value;
   const name = $('#in_name').value.trim();
   const rawAns = $('#in_ans').value.trim();
   if(name.length < 3){ alert('Por favor, escribe tu nombre y la inicial de tu apellido (ej. Marta R.)'); $('#in_name').focus(); return; }
   if(!rawAns){ alert('Escribe tu resultado antes de enviar.'); $('#in_ans').focus(); return; }
 
-  const nextTry = u + 1;
-  setTries(nextTry);
-
   const cleanAns = rawAns.toLowerCase().replace(/\s+/g,'');
+  // Evitar que envíe varias veces exactamente el mismo resultado
+  const alreadySent = rec.sent.some(prev => prev.toLowerCase().replace(/\s+/g,'') === cleanAns);
+  if(alreadySent){
+    alert(`⚠️ Ya habías enviado "${rawAns}" anteriormente.\n\nNo gastes un intento enviando el mismo resultado dos veces: espera a que el profe actualice el ranking para comprobar si has acertado o prueba solo si tienes una respuesta diferente.`);
+    return;
+  }
+
+  const nextTry = rec.tries + 1;
+  rec.tries = nextTry;
+  rec.sent.push(rawAns);
+  saveUserRecord(rec);
+
   const isOk = RETO_ACTUAL.solucion.includes(cleanAns);
-  const pts = nextTry===1 ? 100 : nextTry===2 ? 70 : 50;
-  const autoTag = isOk ? `✅ ACERTADO (${pts} pts)` : `❌ FALLO (+10 pts participación | puso: ${rawAns})`;
+  const basePts = nextTry===1 ? 100 : nextTry===2 ? 70 : 50;
+  const bonus = getDayBonus();
+  const totalPts = basePts + bonus.pts;
+  const autoTag = isOk
+    ? `✅ ACERTADO (${totalPts} pts = ${basePts} + ${bonus.pts} bonus ${bonus.name})`
+    : `❌ FALLO (+10 pts participación | ${bonus.name} | puso: ${rawAns})`;
   const grpLabel = grp === 'INVITADOS' ? 'Invitados' : grp;
 
   const fd = new URLSearchParams();
@@ -432,8 +487,11 @@ function sendAns(){
   const m = $('#send_msg');
   m.classList.remove('hide');
   m.innerHTML = `🛰️ <b>¡Envío #${nextTry} recibido en el laboratorio!</b><br>
-    Tu respuesta (<b>${rawAns}</b>) queda guardada en secreto para <b>${name} (${grpLabel})</b>.<br>
-    <span style="font-size:.88rem;opacity:.9">${rem > 0 ? `Ya tienes asegurados tus puntos de participación. Si quieres mejorar tu resultado, aún te quedan ${rem} envío(s).` : 'Has completado tus 3 intentos. ¡Atento al ranking cuando el profe publique los resultados!'}</span>`;
+    Tu respuesta (<b>${rawAns}</b>) queda guardada en secreto para <b>${name} (${grpLabel})</b>.
+    <div class="warn-box">
+      ⚠️ IMPORTANTE: No uses otro intento hasta que no se publique el resultado en el ranking y sepas si has acertado. Tampoco envíes varios intentos con el mismo resultado.
+    </div>
+    <div style="font-size:.86rem;opacity:.9;margin-top:8px">${rem > 0 ? `Ya tienes asegurados tus 10 puntos de participación. Te quedan ${rem} envío(s) de reserva por si fallaste.` : 'Has completado tus 3 intentos de esta semana.'}</div>`;
 }
 
 /* ---- Navegación de pestañas ---- */
